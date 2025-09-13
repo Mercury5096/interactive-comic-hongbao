@@ -82,3 +82,8 @@ header .title { font-size: 16px; opacity: .9; }
 }
 .hs.done rect { fill: rgba(0, 0, 0, .001); stroke: transparent; }
 .overlay *:focus { outline: none !important; }
+
+/* 進出淡入：避免看到上一頁殘影 */
+#pageImg { opacity: 0; transition: opacity .25s ease; }
+#pageImg.ready { opacity: 1; }
+

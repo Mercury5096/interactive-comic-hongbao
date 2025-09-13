@@ -152,6 +152,26 @@
       });
     }
 
+    async function preloadPageConfig(pId) {
+      try {
+        const r = await fetch(`assets/config/${pId}.json`, { cache: 'force-cache' });
+        if (!r.ok) return null;
+        const jc = await r.json();
+        // 預先把下一頁底圖丟進解碼序列
+        await preloadImage(jc?.page?.image);
+        return jc;
+      } catch { return null; }
+    }
+
+    function prefetchNeighbors(currentId) {
+      const i = pages.indexOf(currentId);
+      const next = pages[Math.min(pages.length - 1, i + 1)];
+      const prev = pages[Math.max(0, i - 1)];
+      if (next && next !== currentId) preloadPageConfig(next);
+      if (prev && prev !== currentId) preloadPageConfig(prev);
+    }
+
+
     const clamp01 = v => Math.max(0, Math.min(1, v || 0));
     let __bgmTweenCancel = null;
     function tweenBgmVolume(audio, toVol, ms = 400) {
@@ -264,27 +284,61 @@
       current = pageId;
       pageTitle.textContent = `載入中… ${pageId}`;
       stopAllSfx(); sfxPlayedOnce.clear();
-      fxLayer.innerHTML = ''; hotspotLayer.innerHTML = '';
+      fxLayer.innerHTML = '';
+      hotspotLayer.innerHTML = '';
 
+      // 切頁瞬間：先關掉淡入狀態 + 隱藏效果層，避免殘影/閃片
+      pageImg.classList.remove('ready');
+      document.body.classList.add('fx-hidden');
+
+      // 載入本頁設定
       const res = await fetch(`assets/config/${pageId}.json`);
       cfg = await res.json();
 
       // 設圖與尺寸
-      pageImg.src = cfg.page.image; pageImg.alt = pageId;
-      PAGE_W = cfg.page.width || 0; PAGE_H = cfg.page.height || 0;
-      if (PAGE_W && PAGE_H) svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+      pageImg.src = cfg.page.image;
+      pageImg.alt = pageId;
+      PAGE_W = cfg.page.width || 0;
+      PAGE_H = cfg.page.height || 0;
+      if (PAGE_W && PAGE_H) {
+        svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+      }
+
+      // 圖片尺寸＆淡入控制
       if (!PAGE_W || !PAGE_H) {
+        // 需要從圖片本身取得尺寸
         if (pageImg.complete && pageImg.naturalWidth) {
-          PAGE_W = pageImg.naturalWidth; PAGE_H = pageImg.naturalHeight;
+          PAGE_W = pageImg.naturalWidth;
+          PAGE_H = pageImg.naturalHeight;
           svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+          // 底圖就緒 → 顯示
+          pageImg.classList.add('ready');
+          document.body.classList.remove('fx-hidden');
         } else {
+          // 等圖片載完再顯示
           await new Promise(r => pageImg.addEventListener('load', () => {
-            PAGE_W = pageImg.naturalWidth; PAGE_H = pageImg.naturalHeight;
-            svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`); r();
+            PAGE_W = pageImg.naturalWidth;
+            PAGE_H = pageImg.naturalHeight;
+            svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+            pageImg.classList.add('ready');
+            document.body.classList.remove('fx-hidden');
+            r();
           }, { once: true }));
+        }
+      } else {
+        // 已有寬高，但圖片可能還在載：保險作法
+        if (pageImg.complete && pageImg.naturalWidth) {
+          pageImg.classList.add('ready');
+          document.body.classList.remove('fx-hidden');
+        } else {
+          pageImg.addEventListener('load', () => {
+            pageImg.classList.add('ready');
+            document.body.classList.remove('fx-hidden');
+          }, { once: true });
         }
       }
 
+      // 後續流程維持不變
       pageTitle.textContent = `${pageId.toUpperCase()} · ${cfg.hotspots?.length || 0} 個互動格`;
       renderHotspots();
       goto(pageId);
@@ -292,13 +346,19 @@
       if (cfg.page.requireAudioUnlock) showAudioHint();
       else if (audioUnlocked) unlockAudioAndPlayBgm();
       else {
-        // 本頁不要求解鎖，但還沒解鎖 → 第一次手勢便順手解鎖（一次性）
-        const onceUnlock = () => { window.removeEventListener('pointerdown', onceUnlock, { capture: true }); unlockAudioAndPlayBgm(); };
+        const onceUnlock = () => {
+          window.removeEventListener('pointerdown', onceUnlock, { capture: true });
+          unlockAudioAndPlayBgm();
+        };
         window.addEventListener('pointerdown', onceUnlock, { capture: true, once: true });
       }
 
       verifyResourcesForPage(cfg);
+
+      // 背景預載前後一頁
+      prefetchNeighbors(pageId);
     }
+
 
     function renderHotspots() {
       hotspotLayer.innerHTML = '';
