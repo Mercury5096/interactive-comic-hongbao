@@ -1,0 +1,286 @@
+{
+    "page": {
+        "image": "assets/images/pg14.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "none",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 690,
+            "y": 31,
+            "width": 284,
+            "height": 203,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg14/pg14-01.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 0,
+                "sfxOnce": true,
+                "once": true,
+                "blockWhilePlaying": true
+            }
+        },
+        {
+            "id": "p02",
+            "x": 746,
+            "y": 628,
+            "width": 253,
+            "height": 177,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg14/pg14-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/knife-sharpening-on-stone.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 0,
+                "sfxOnce": true,
+                "once": true,
+                "blockWhilePlaying": true
+            }
+        },
+        {
+            "id": "p03",
+            "x": 18,
+            "y": 16,
+            "width": 715,
+            "height": 723,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg14/pg14-03A.webp",
+                    "assets/images/effects/pg14/pg14-03B.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    0
+                ],
+                "durations": [
+                    300,
+                    300,
+                    300
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": 4,
+                "preSfx": {
+                    "src": "assets/audio/electric-impact.mp3",
+                    "volume": 1.0
+                },
+                "startDelay": 0,
+                "sfxOnce": true,
+                "sfxKey": "assets/audio/electric-impact.mp3"
+            }
+        },
+        {
+            "id": "p04",
+            "x": 21,
+            "y": 760,
+            "width": 796,
+            "height": 646,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg14/pg14-04.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            600
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false,
+                        "slideFrom": {
+                            "x": -200,
+                            "relative": true
+                        },
+                        "slideMs": 600,
+                        "blend": "crossfade",
+                        "fadeMs": 600,
+                        "preSfx": {
+                            "src": "assets/audio/magic-spell-impact.mp3",
+                            "volume": 1.0
+                        },
+                        "startDelay": 0,
+                        "sfxOnce": true,
+                        "sfxKey": "assets/audio/magic-spell-impact.mp3"
+                    },
+                    {
+                        "run": "p05"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 1000
+                    },
+                    {
+                        "run": "p06"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p07"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p08"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p05",
+            "x": 95,
+            "y": 879,
+            "width": 264,
+            "height": 262,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg14/pg14-06.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "startDelay": 350,
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p06",
+            "x": 38,
+            "y": 1242,
+            "width": 379,
+            "height": 154,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg14/pg14-05.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    1000
+                ],
+                "startDelay": 30,
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p07",
+            "x": 912,
+            "y": 1140,
+            "width": 284,
+            "height": 171,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg14/pg14-07.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            1000
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p08",
+            "x": 19,
+            "y": 1424,
+            "width": 1207,
+            "height": 312,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg14/pg14-08.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "startDelay": 800,
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/explosion.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 0,
+                "sfxOnce": true,
+                "once": true,
+                "blockWhilePlaying": true
+            }
+        }
+    ]
+}

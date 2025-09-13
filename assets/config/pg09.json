@@ -1,0 +1,164 @@
+{
+  "page": {
+    "image": "assets/images/pg09.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3",
+    "requireAudioUnlock": false
+  },
+  "hotspots": [
+    {
+      "id": "p01",
+      "x": 928,
+      "y": 155,
+      "width": 171,
+      "height": 106,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg09/pg09-01.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "sfx": {
+          "src": "assets/audio/women-gasping.mp3",
+          "volume": 1.0
+        },
+        "sfxOnFrame": 0,
+        "sfxOnce": true,
+        "once": true,
+        "blockWhilePlaying": true
+      }
+    },
+    {
+      "id": "p02",
+      "x": 811,
+      "y": 238,
+      "width": 220,
+      "height": 132,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg09/pg09-02.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p03",
+      "x": 136,
+      "y": 734,
+      "width": 342,
+      "height": 93,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg09/pg09-03.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p04",
+      "x": 695,
+      "y": 833,
+      "width": 528,
+      "height": 902,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg09/pg09-04.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "slideFrom": { "y": 200, "relative": true },
+        "slideMs": 600,
+        "preSfx": { "src": "assets/audio/phone-ring-out-call2.mp3", "volume": 1.0 },
+        "startDelay": 0,
+        "once": true,
+        "blockWhilePlaying": true,
+        "sfxOnce": true,
+        "sfxKey": "assets/audio/phone-ring-out-call2.mp3"
+      }
+    },
+    {
+      "id": "p05",
+      "x": 21,
+      "y": 834,
+      "width": 658,
+      "height": 907,
+      "action": {
+        "type": "series",
+        "once": true,
+        "blockWhilePlaying": true,
+        "steps": [
+          {
+            "type": "swapFrames",
+            "frames": [
+              "assets/images/effects/pg09/pg09-05A.webp",
+              "assets/images/effects/pg09/pg09-05B.webp",
+              "assets/images/effects/pg09/pg09-05C.webp"
+            ],
+            "pattern": [0, 1, 2, 1],
+            "durations": [460, 460, 460, 460],
+            "persist": true,
+            "dedupe": true,
+            "loop": 4,
+            "blend": "crossfade",
+            "fadeMs": 160,
+            "jitterMs": 30,
+            "preSfx": { "src": "assets/audio/ringtone.mp3", "volume": 1.0 },
+            "startDelay": 0,
+            "sfxOnce": true,
+            "sfxKey": "assets/audio/ringtone.mp3"
+          },
+          { "run": "p06" },
+          { "type": "delay", "ms": 1000 },
+          { "run": "p07" }
+        ]
+      }
+    },
+    {
+      "id": "p06",
+      "x": 53,
+      "y": 1137,
+      "width": 348,
+      "height": 209,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg09/pg09-07.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p07",
+      "x": 31,
+      "y": 1611,
+      "width": 297,
+      "height": 106,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg09/pg09-06.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    }
+  ]
+}

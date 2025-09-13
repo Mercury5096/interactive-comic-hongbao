@@ -1,0 +1,287 @@
+{
+    "page": {
+        "image": "assets/images/pg16.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 3,
+            "y": 0,
+            "width": 1238,
+            "height": 823,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/burning-monster.mp3",
+                        "volume": 1.0,
+                        "sfxOnce": true,
+                        "sfxKey": "fire-burn"
+                    },
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg16/pg16-01A.webp",
+                            "assets/images/effects/pg16/pg16-01B.webp"
+                        ],
+                        "pattern": [
+                            0,
+                            1,
+                            0,
+                            1
+                        ],
+                        "durations": [
+                            400,400,400,400
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": 3,
+                        "blend": "crossfade",
+                        "fadeMs": 160,
+                        "jitterMs": 30
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p02"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p03"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p04"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p02",
+            "x": 806,
+            "y": 414,
+            "width": 350,
+            "height": 261,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg16/pg16-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    200
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 166,
+            "y": 188,
+            "width": 380,
+            "height": 288,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg16/pg16-03.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                   200
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p04",
+            "x": 20,
+            "y": 463,
+            "width": 276,
+            "height": 237,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg16/pg16-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    200
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p05",
+            "x": 0,
+            "y": 807,
+            "width": 1241,
+            "height": 947,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/explore-monster.mp3",
+                        "volume": 1.0,
+                        "sfxOnce": true
+                    },
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg16/pg16-05A.webp",
+                            "assets/images/effects/pg16/pg16-05B.webp",
+                            "assets/images/effects/pg16/pg16-05C.webp",
+                            "assets/images/effects/pg16/pg16-05D.webp"
+                        ],
+                        "pattern": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            2,
+                            1,
+                            0
+                        ],
+                        "durations": [
+                            200,200,200,200,200,200,200
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": 4,
+                        "blend": "crossfade",
+                        "fadeMs": 100,
+                        "jitterMs": 50
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p06"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p07"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p08"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p06",
+            "x": 804,
+            "y": 996,
+            "width": 277,
+            "height": 499,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg16/pg16-06.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p07",
+            "x": 54,
+            "y": 836,
+            "width": 465,
+            "height": 874,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg16/pg16-07.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p08",
+            "x": 39,
+            "y": 1259,
+            "width": 420,
+            "height": 297,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg16/pg16-08.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

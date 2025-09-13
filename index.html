@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>互動式網頁漫畫 · 目錄</title>
+<style>
+  html,body{margin:0;background:#0b0f14;color:#e8f0ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Noto Sans TC',sans-serif}
+  .wrap{max-width:960px;margin:40px auto;padding:0 16px}
+  h1{font-size:22px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+  a.item{display:block;background:rgba(17,25,34,.7);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px 12px;text-decoration:none;color:#e8f0ff}
+  a.item:hover{background:rgba(255,255,255,.08)}
+  .muted{opacity:.75}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>互動式網頁漫畫 · 目錄</h1>
+  <p class="muted">由右往左閱讀。從封面開始：</p>
+  <div class="grid" id="list"></div>
+</div>
+<script>
+const pages = ["CV","pg01","pg02","pg03","pg04","pg05","pg06","pg07","pg08","pg09","pg10","pg11","pg12","pg13","pg14","pg15","pg16","pg17","pg18","pg19"];
+const names = { CV:"封面", pg01:"第01頁", pg02:"第02頁", pg03:"第03頁", pg04:"第04頁", pg05:"第05頁",
+  pg06:"第06頁", pg07:"第07頁", pg08:"第08頁", pg09:"第09頁", pg10:"第10頁",
+  pg11:"第11頁", pg12:"第12頁", pg13:"第13頁", pg14:"第14頁", pg15:"第15頁",
+  pg16:"第16頁", pg17:"第17頁", pg18:"第18頁", pg19:"第19頁" };
+const list = document.getElementById('list');
+pages.forEach(p=>{
+  const a = document.createElement('a');
+  a.className='item';
+  a.href = `reader.html?p=${p}`;
+  a.textContent = names[p] || p;
+  list.appendChild(a);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "page": {
+    "image": "assets/images/pg01.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3",
+    "requireAudioUnlock": false
+  },
+  "hotspots": [
+    {
+      "id": "p01",
+      "x": 0,
+      "y": 0,
+      "width": 1241,
+      "height": 1754,
+       "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg01/slimy0.webp",
+                    "assets/images/effects/pg01/slimy1.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                "durations": [
+                    1000,
+                    1000,
+                    1000,
+                    1000,
+                    1000,
+                    1000
+                ],
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/slimy-pasta-stir.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 0
+            }
+    }
+  ]
+}

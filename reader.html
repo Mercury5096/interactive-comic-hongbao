@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>互動式網頁漫畫 · Reader</title>
+  <link rel="stylesheet" href="assets/css/reader.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
+
+</head>
+
+<body>
+  <header>
+    <div id="pageTitle" class="title">讀取中…</div>
+    <nav class="nav">
+      <a id="btnPrev" class="btn" href="#">⟵ 上一頁</a>
+      <a id="btnNext" class="btn" href="#">下一頁 ⟶</a>
+      <a class="btn" href="index.html">目錄</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="page" id="page">
+      <img id="pageImg" src="" alt="" />
+      <div class="overlay">
+        <svg id="svg" viewBox="0 0 10 10" preserveAspectRatio="none" aria-hidden="true">
+          <g id="fxLayer"></g>
+          <g id="hotspotLayer"></g>
+        </svg>
+      </div>
+    </div>
+    <div class="muted" style="max-width:var(--max);padding:6px 16px">提示：可互動格以淡黃色標示，點擊後立即消失並觸發效果／音效。</div>
+  </div>
+
+  <!-- 底部 sticky 導覽列 -->
+  <div class="reader-bottom-bar" id="bottomBar">
+    <button id="btnPrevBottom" class="nav-btn">⟵ 上一頁</button>
+    <div class="spacer"></div>
+    <a class="nav-btn" href="index.html">目錄</a>
+    <button id="btnNextBottom" class="nav-btn">下一頁 ⟶</button>
+  </div>
+
+  <!-- 音訊解鎖提示 -->
+  <div id="audioHint"
+    style="position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6);z-index:10001;">
+    <div
+      style="background:rgba(15,23,32,.95);border:1px solid rgba(255,255,255,.18);padding:16px 18px;border-radius:12px;max-width:90vw;text-align:center;">
+      <div style="font-size:16px;margin-bottom:6px;">🔊 請點一下開啟聲音</div>
+      <div style="opacity:.8;font-size:13px;">為了遵守瀏覽器規則，需先點擊一次才能播放背景音樂與音效。</div>
+      <button id="audioHintBtn" class="btn" style="margin-top:10px;">好的，開啟聲音</button>
+    </div>
+  </div>
+
+  <script>
+    /* ---------------- 全域設定 ---------------- */
+    const DEFAULT_BGM = "assets/audio/bgm_main.mp3";
+    const DEBUG_SFX_TOAST = false;
+    const pages = ["CV", "pg01", "pg02", "pg03", "pg04", "pg05", "pg06", "pg07", "pg08", "pg09", "pg10", "pg11", "pg12", "pg13", "pg14", "pg15", "pg16", "pg17", "pg18", "pg19"];
+    const params = new URLSearchParams(location.search);
+    let current = pages.includes(params.get("p")) ? params.get("p") : "CV";
+
+    /* DOM */
+    const pageTitle = document.getElementById('pageTitle');
+    const pageImg = document.getElementById('pageImg');
+    const svg = document.getElementById('svg');
+    const fxLayer = document.getElementById('fxLayer');
+    const hotspotLayer = document.getElementById('hotspotLayer');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnPrevBottom = document.getElementById('btnPrevBottom');
+    const btnNextBottom = document.getElementById('btnNextBottom');
+
+    // 換頁時不要還原上一個卷軸位置
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+    // 幫手：立刻回到頂部（多路徑保險）
+    function scrollTopInstant(smooth = false) {
+      const behavior = smooth ? 'smooth' : 'auto';
+      try { window.scrollTo({ top: 0, left: 0, behavior }); } catch (e) { window.scrollTo(0, 0); }
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+
+
+
+
+    /* 音訊狀態 */
+    let audioUnlocked = (sessionStorage.getItem('audioUnlocked') === '1');
+    let bgm = null;
+    window.sfxPool = window.sfxPool || new Map();
+    const sfxPlayedOnce = new Set();
+
+    /* ---------------- 音訊解鎖 ---------------- */
+    const audioHint = document.getElementById('audioHint');
+    const audioHintBtn = document.getElementById('audioHintBtn');
+    function showAudioHint() { audioHint.style.display = 'grid'; }
+    function hideAudioHint() { audioHint.style.display = 'none'; }
+    audioHintBtn?.addEventListener('click', () => { unlockAudioAndPlayBgm(); });
+
+    async function unlockAudioAndPlayBgm() {
+      audioUnlocked = true;
+      sessionStorage.setItem('audioUnlocked', '1');
+
+      const pageBgm = (cfg?.page?.bgm ?? '').toString().trim();
+
+      // 本頁指定不播 BGM
+      if (pageBgm === 'none' || cfg?.page?.noBgm === true) {
+        if (bgm) { try { bgm.pause(); } catch (e) { } bgm = null; }
+        hideAudioHint();
+        return;
+      }
+
+      const desired = pageBgm || DEFAULT_BGM;
+
+      try {
+        if (!bgm) {
+          // 第一次建立同一條音軌
+          bgm = new Audio(desired);
+          bgm.loop = true;
+          bgm.volume = 0.3;
+          await bgm.play();
+        } else {
+          const want = new URL(desired, location.href).href;
+          if (bgm.src === want) {
+            // 同曲目：只拉音量，不換軌（避免卡一下）
+            if (bgm.paused) { try { await bgm.play(); } catch (e) { } }
+            else { tweenBgmVolume(bgm, 0.3, 600); }
+          } else {
+            // 換曲目才 crossfade
+            await crossfadeTo(desired, 800, 0.3);
+            if (bgm) { bgm.loop = true; bgm.volume = 0.3; }
+          }
+        }
+      } catch (e) {
+        console.warn('Audio unlock/play failed', e);
+      } finally {
+        // ★ 無論成功或失敗，都把提示關掉，避免遮擋互動
+        hideAudioHint();
+      }
+    }
+
+
+    function preloadImage(url) {
+      return new Promise((ok) => {
+        if (!url) return ok();
+        const img = new Image();
+        img.onload = () => ok();
+        img.onerror = () => ok();
+        img.src = url;
+        if (img.decode) img.decode().then(ok).catch(ok);
+      });
+    }
+
+    const clamp01 = v => Math.max(0, Math.min(1, v || 0));
+    let __bgmTweenCancel = null;
+    function tweenBgmVolume(audio, toVol, ms = 400) {
+      if (!audio) return;
+      if (typeof __bgmTweenCancel === 'function') __bgmTweenCancel();
+      const from = clamp01(audio.volume);
+      const target = clamp01(toVol);
+      const t0 = performance.now();
+      let stopped = false;
+      __bgmTweenCancel = () => { stopped = true; };
+      function tick(t) {
+        if (stopped) return;
+        const k = Math.max(0, Math.min(1, (t - t0) / Math.max(1, ms)));
+        audio.volume = clamp01(from + (target - from) * k);
+        if (k < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+
+    async function crossfadeTo(nextSrc, ms = 800, targetVol = 0.6) {
+      // 若有尚在進行的 tween（例如 p03 的淡出），先取消，避免互搶
+      if (typeof __bgmTweenCancel === 'function') { __bgmTweenCancel(); __bgmTweenCancel = null; }
+
+      const prev = bgm;
+      const fromVol = prev ? clamp01(prev.volume) : 0;
+
+      const next = new Audio(nextSrc);
+      next.loop = true;
+      next.volume = 0;
+
+      try { await next.play(); } catch (e) { /* autoplay 例外忽略 */ }
+
+      const t0 = performance.now();
+      return new Promise(ok => {
+        (function raf(t) {
+          const k = Math.max(0, Math.min(1, (t - t0) / Math.max(1, ms)));
+          // 舊音軌：從「目前音量 fromVol」淡到 0
+          if (prev) prev.volume = clamp01(fromVol * (1 - k));
+          // 新音軌：從 0 淡到 targetVol
+          next.volume = clamp01(targetVol * k);
+
+          if (k < 1) requestAnimationFrame(raf);
+          else {
+            if (prev) { try { prev.pause(); } catch (e) { } }
+            bgm = next;
+            ok();
+          }
+        })(t0);
+      });
+    }
+
+
+    function stopAllSfx() {
+      if (!window.sfxPool) return;
+      window.sfxPool.forEach(a => { try { a.pause(); a.currentTime = 0; } catch (e) { } });
+      window.sfxPool.clear();
+    }
+
+    /* ---------------- 導覽 ---------------- */
+    function goto(pageId) {
+      const i = pages.indexOf(pageId);
+      const prev = pages[Math.max(0, i - 1)];
+      const next = pages[Math.min(pages.length - 1, i + 1)];
+      const prevUrl = `reader.html?p=${prev}`;
+      const nextUrl = `reader.html?p=${next}`;
+
+      // 頂部
+      btnPrev.href = prevUrl; btnNext.href = nextUrl;
+      btnPrev.classList.toggle('muted', prev === pageId);
+      btnNext.classList.toggle('muted', next === pageId);
+
+      // 底部
+      if (btnPrevBottom && btnNextBottom) {
+        btnPrevBottom.disabled = (prev === pageId);
+        btnNextBottom.disabled = (next === pageId);
+        btnPrevBottom.dataset.href = prevUrl;
+        btnNextBottom.dataset.href = nextUrl;
+      }
+    }
+    function navigateTo(p) {
+      // ★ 切頁一開始就回頂
+      scrollTopInstant();
+      if (!pages.includes(p)) return;
+      history.pushState({ p }, "", `reader.html?p=${p}`);
+      loadPage(p);
+    }
+    btnPrev.addEventListener('click', e => { e.preventDefault(); const p = new URL(btnPrev.href).searchParams.get('p'); navigateTo(p); });
+    btnNext.addEventListener('click', e => { e.preventDefault(); const p = new URL(btnNext.href).searchParams.get('p'); navigateTo(p); });
+    window.addEventListener('popstate', () => { const p = new URLSearchParams(location.search).get('p') || "CV"; loadPage(p); });
+    btnPrevBottom?.addEventListener('click', e => {
+      e.preventDefault();
+      const url = btnPrevBottom.dataset.href || btnPrev.href;
+      const p = new URL(url, location.href).searchParams.get('p');
+      navigateTo(p);
+    });
+    btnNextBottom?.addEventListener('click', e => {
+      e.preventDefault();
+      const url = btnNextBottom.dataset.href || btnNext.href;
+      const p = new URL(url, location.href).searchParams.get('p');
+      navigateTo(p);
+      requestAnimationFrame(scrollTopInstant);
+    });
+
+
+    /* ---------------- 載入 / 渲染 ---------------- */
+    let cfg = null; let PAGE_W = null, PAGE_H = null;
+
+    async function loadPage(pageId) {
+      current = pageId;
+      pageTitle.textContent = `載入中… ${pageId}`;
+      stopAllSfx(); sfxPlayedOnce.clear();
+      fxLayer.innerHTML = ''; hotspotLayer.innerHTML = '';
+
+      const res = await fetch(`assets/config/${pageId}.json`);
+      cfg = await res.json();
+
+      // 設圖與尺寸
+      pageImg.src = cfg.page.image; pageImg.alt = pageId;
+      PAGE_W = cfg.page.width || 0; PAGE_H = cfg.page.height || 0;
+      if (PAGE_W && PAGE_H) svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+      if (!PAGE_W || !PAGE_H) {
+        if (pageImg.complete && pageImg.naturalWidth) {
+          PAGE_W = pageImg.naturalWidth; PAGE_H = pageImg.naturalHeight;
+          svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+        } else {
+          await new Promise(r => pageImg.addEventListener('load', () => {
+            PAGE_W = pageImg.naturalWidth; PAGE_H = pageImg.naturalHeight;
+            svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`); r();
+          }, { once: true }));
+        }
+      }
+
+      pageTitle.textContent = `${pageId.toUpperCase()} · ${cfg.hotspots?.length || 0} 個互動格`;
+      renderHotspots();
+      goto(pageId);
+
+      if (cfg.page.requireAudioUnlock) showAudioHint();
+      else if (audioUnlocked) unlockAudioAndPlayBgm();
+      else {
+        // 本頁不要求解鎖，但還沒解鎖 → 第一次手勢便順手解鎖（一次性）
+        const onceUnlock = () => { window.removeEventListener('pointerdown', onceUnlock, { capture: true }); unlockAudioAndPlayBgm(); };
+        window.addEventListener('pointerdown', onceUnlock, { capture: true, once: true });
+      }
+
+      verifyResourcesForPage(cfg);
+    }
+
+    function renderHotspots() {
+      hotspotLayer.innerHTML = '';
+      (cfg.hotspots || []).forEach(h => {
+        const clickable = (h.clickable !== false) && h.action && h.action.type !== 'none';
+        const showHint = (h.hint !== false);
+        if (!clickable && !showHint) return;
+
+        const g = elNS('g'); g.setAttribute('class', 'hs'); g.dataset.id = h.id || '';
+        if (!clickable) g.style.pointerEvents = 'none';
+        if (showHint) {
+          const r = elNS('rect'); r.setAttribute('x', h.x); r.setAttribute('y', h.y);
+          r.setAttribute('width', h.width); r.setAttribute('height', h.height); r.setAttribute('rx', 8);
+          g.appendChild(r);
+        }
+        hotspotLayer.appendChild(g);
+      });
+    }
+
+    /* -------- 事件分派（點擊立刻收黃框） -------- */
+    svg.addEventListener('click', async (ev) => {
+      const node = ev.target.closest('.hs'); if (!node) return;
+      ev.preventDefault();
+      const id = node.dataset.id;
+      const h = (cfg.hotspots || []).find(x => x.id === id);
+      if (!h || !h.action) return;
+
+      node.classList.add('done'); node.style.pointerEvents = 'none';
+      await runAction(h, withDefaults(h.action));
+    });
+
+    /* 預設值 */
+    const DEFAULTS = {
+      swapFrames: { pattern: [0], durations: [600], loop: false, persist: false, dedupe: false, blockWhilePlaying: true },
+      sfx: { volume: 1.0 },
+      series: { steps: [] }
+    };
+    function withDefaults(a) { const t = a?.type; return (t && DEFAULTS[t]) ? ({ ...DEFAULTS[t], ...a }) : a; }
+
+    /* 音效 */
+    function playSfx(src, volume = 1.0) {
+      if (!audioUnlocked) return;
+      let a = sfxPool.get(src); if (!a) { a = new Audio(src); sfxPool.set(src, a); }
+      a.volume = Math.max(0, Math.min(1, volume ?? 1));
+      a.onerror = () => console.warn('[SFX 404/ERR]', src);
+      a.currentTime = 0; a.play().catch(() => { });
+
+      if (DEBUG_SFX_TOAST) {
+        const t = document.createElement('div'); t.textContent = 'SFX ▶ ' + src;
+        Object.assign(t.style, { position: 'fixed', right: '12px', top: '12px', background: 'rgba(0,0,0,.6)', color: '#fff', padding: '6px 10px', borderRadius: '8px', fontSize: '12px', zIndex: 9999 });
+        document.body.appendChild(t); setTimeout(() => t.remove(), 2000);
+      }
+    }
+
+    /* === 核心：執行 action（含 once / busy 鎖 / series 前置預載） === */
+    async function runAction(h, action) {
+      if (!action || !action.type) return;
+
+      // once：開始就消耗（避免連點重入）
+      if (action.once) {
+        if (h._consumed) return;
+        h._consumed = true;
+      }
+
+      if (action.type === 'unlockAudio') {
+        await unlockAudioAndPlayBgm();
+      }
+      else if (action.type === 'sfx') {
+        if (action.cooldownMs) {
+          const now = performance.now(); if (h._nextAt && now < h._nextAt) return; h._nextAt = now + action.cooldownMs;
+        }
+        const key = action.sfxKey || action.src;
+        if (action.sfxOnce && key && sfxPlayedOnce.has(key)) return;
+        playSfx(action.src, action.volume ?? 1.0);
+        if (action.sfxOnce && key) sfxPlayedOnce.add(key);
+      }
+      else if (action.type === 'bgm') {
+        const fade = (action.crossfadeMs != null) ? (action.crossfadeMs | 0) : 800;
+        const vol = (action.volume != null) ? clamp01(action.volume) : 0.6;
+        const loop = (action.loop != null) ? !!action.loop : true;
+
+        if (action.stop === true || action.src === 'none' || action.src === 'stop' || action.src == null) {
+          if (bgm) { try { bgm.pause(); } catch (e) { } bgm = null; }
+        } else if (action.src) {
+          const want = new URL(action.src, location.href).href;
+          if (bgm && bgm.src === want) {
+            // 同曲目：只做音量漸變，不換軌（避免卡頓/相位干涉）
+            bgm.loop = loop;
+            tweenBgmVolume(bgm, vol, fade);
+          } else {
+            // 換曲目：crossfade 真正換軌
+            await crossfadeTo(action.src, fade, vol);
+            if (bgm) { bgm.loop = loop; bgm.volume = vol; }
+          }
+        }
+      }
+
+      else if (action.type === 'swapFrames') {
+        await runSwapFramesSmall(h, action);
+      }
+      else if (action.type === 'delay') {
+        const ms = Math.max(0, action.ms | 0); await new Promise(r => setTimeout(r, ms));
+      }
+      else if (action.type === 'series' || action.type === 'actions') {
+        const steps = action.steps || action.items || [];
+        // ★ 先預載本序列會用到的切片與音效 → 避免早期步驟卡載入、後面步驟先顯示（pg10 的 p06/p07 > p05 問題）
+        await preloadSeriesSteps(steps);
+
+        for (const step of steps) {
+          if (step?.run) {
+            const target = (cfg.hotspots || []).find(x => x.id === step.run);
+            if (target && target.action) {
+              const node = [...hotspotLayer.querySelectorAll('.hs')].find(g => g.dataset.id === target.id);
+              if (node) { node.classList.add('done'); node.style.pointerEvents = 'none'; }
+              await runAction(target, withDefaults(step.action || target.action));
+            }
+          } else if (step?.type) {
+            await runAction(h, withDefaults(step));
+          }
+        }
+      }
+    }
+
+    /* 預載整個 series 用到的資源（含 nested series/actions） */
+    async function preloadSeriesSteps(steps) {
+      const urls = new Set();
+      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
+
+      function addFromAction(a) {
+        if (!a) return;
+        if (a.type === 'swapFrames') {
+          (a.frames || []).forEach(u => urls.add(u));
+          const s = a.sfx;
+          if (typeof s === 'string') urls.add(s);
+          else if (s?.src) urls.add(s.src);
+          const pre = a.preSfx;
+          if (typeof pre === 'string') urls.add(pre);
+          else if (pre?.src) urls.add(pre.src);
+        } else if (a.type === 'series' || a.type === 'actions') {
+          (a.steps || a.items || []).forEach(addFromStep);
+        }
+      }
+      function addFromStep(step) {
+        if (step?.run) {
+          const t = byId[step.run];
+          addFromAction(step.action || t?.action);
+        } else if (step?.type) {
+          addFromAction(step);
+        }
+      }
+      steps.forEach(addFromStep);
+
+      await Promise.all([...urls].map(url => preloadImage(url)));
+    }
+
+    /* -------- swapFrames：支援 slide-in / crossfade / preSfx / shake -------- */
+    function runSwapFramesSmall(h, a) {
+      const action = a || h.action || {};
+      const frames = action.frames || [];
+      if (!frames.length) return Promise.resolve();
+
+      const pattern = (Array.isArray(action.pattern) && action.pattern.length) ? action.pattern : frames.map((_, i) => i);
+      const baseInt = (typeof action.interval === 'number' && action.interval > 0) ? action.interval : 90;
+      const durations = (Array.isArray(action.durations) && action.durations.length === pattern.length) ? action.durations.slice() : pattern.map(() => baseInt);
+      let loopsLeft = (action.loop === true) ? Infinity : (typeof action.loop === 'number' && action.loop > 0) ? (action.loop | 0) : 1;
+
+      const sfxCfg = action.sfx;
+      const sfxOnFrame = (typeof action.sfxOnFrame === 'number') ? action.sfxOnFrame : null;
+      const sfxOnStep = (typeof action.sfxOnStep === 'number') ? action.sfxOnStep : null;
+      const sfxRepeat = !!action.sfxRepeat;
+      const sfxOnceFlg = !!action.sfxOnce;
+      const sfxKey = action.sfxKey || (typeof sfxCfg === 'string' ? sfxCfg : (sfxCfg?.src || null));
+      let sfxPlayed = false;
+
+      const blend = action.blend || 'cut';
+      const fadeMs = Math.max(0, action.fadeMs | 0);
+      const jitter = Math.max(0, action.jitterMs | 0);
+      const startDelay = Math.max(0, action.startDelay | 0);
+      const preSfx = action.preSfx || null;
+
+      function runShake(im, baseX, baseY, a) {
+        const ampX = Math.max(0, a.shakeX | 0);
+        const ampY = Math.max(0, a.shakeY | 0);
+        const ms = Math.max(0, a.shakeMs != null ? a.shakeMs | 0 : 400);
+        const hz = Math.max(1, a.shakeHz != null ? a.shakeHz | 0 : 20);
+        const decay = (a.decay != null) ? a.decay : 1.0;
+        if (!ampX && !ampY) return;
+        const t0 = performance.now();
+        (function raf(t) {
+          const dt = t - t0;
+          const p = Math.min(1, dt / ms);
+          const d = Math.pow(decay, p * 10);
+          const phase = 2 * Math.PI * hz * (dt / 1000);
+          const dx = ampX ? Math.sin(phase) * ampX * d : 0;
+          const dy = ampY ? Math.cos(phase) * ampY * d : 0;
+          im.setAttribute('x', baseX + dx);
+          im.setAttribute('y', baseY + dy);
+          if (p < 1) requestAnimationFrame(raf);
+          else { im.setAttribute('x', baseX); im.setAttribute('y', baseY); }
+        })(t0);
+      }
+
+      // slide-in：slideFromY 或 slideFrom:{x?,y?,relative?}
+      const slideMs = Math.max(0, action.slideMs != null ? action.slideMs | 0 : 600);
+      const slideE = (action.slideEasing || 'easeOutCubic');
+      let slideFromSpec = null;
+      if (typeof action.slideFromY === 'number') slideFromSpec = { y: action.slideFromY, relative: false };
+      else if (action.slideFrom && typeof action.slideFrom === 'object') {
+        slideFromSpec = {
+          x: (typeof action.slideFrom.x === 'number') ? action.slideFrom.x : null,
+          y: (typeof action.slideFrom.y === 'number') ? action.slideFrom.y : null,
+          relative: !!action.slideFrom.relative
+        };
+      }
+
+      const persist = !!action.persist || !!action.holdLast || !!action.keep;
+      const dedupe = !!action.dedupe;
+      if (action.blockWhilePlaying && h._busyPromise) return h._busyPromise;
+
+      const imgs = frames.map(src => {
+        const im = elNS('image');
+        im.setAttributeNS('http://www.w3.org/1999/xlink', 'href', src);
+        im.setAttribute('x', h.x); im.setAttribute('y', h.y);
+        im.setAttribute('width', h.width); im.setAttribute('height', h.height);
+        im.style.display = 'none'; im.style.opacity = '1'; im.style.pointerEvents = 'none';
+        fxLayer.appendChild(im);
+        return im;
+      });
+
+      const Easings = { linear: t => t, easeOutCubic: t => 1 - Math.pow(1 - t, 3) };
+      const ease = Easings[slideE] || Easings.easeOutCubic;
+      const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n | 0));
+      let cur = -1, fadeReq = 0;
+
+      function show(idx) {
+        const to = imgs[idx];
+        if (cur < 0) {
+          if (slideFromSpec) {
+            const startX = (slideFromSpec.x != null) ? (slideFromSpec.relative ? h.x + slideFromSpec.x : slideFromSpec.x) : h.x;
+            const startY = (slideFromSpec.y != null) ? (slideFromSpec.relative ? h.y + slideFromSpec.y : slideFromSpec.y) : h.y;
+            to.style.display = 'block'; to.style.opacity = '1';
+            to.setAttribute('x', startX); to.setAttribute('y', startY);
+            runShake(to, h.x, h.y, action);
+            const t0 = performance.now();
+            (function raf(t) {
+              const p = Math.min(1, (t - t0) / Math.max(1, slideMs));
+              const k = ease(p);
+              const nx = startX + (h.x - startX) * k;
+              const ny = startY + (h.y - startY) * k;
+              to.setAttribute('x', nx); to.setAttribute('y', ny);
+              if (p < 1) requestAnimationFrame(raf);
+              else { to.setAttribute('x', h.x); to.setAttribute('y', h.y); cur = idx; }
+            })(performance.now());
+            return;
+          }
+          if (blend === 'crossfade' && fadeMs > 0) {
+            to.style.display = 'block'; to.style.opacity = '0'; runShake(to, h.x, h.y, action);
+            const t0 = performance.now();
+            (function raf(t) {
+              const p = Math.min(1, (t - t0) / Math.max(1, fadeMs));
+              to.style.opacity = String(p);
+              if (p < 1) requestAnimationFrame(raf);
+              else { to.style.opacity = '1'; cur = idx; }
+            })(t0);
+            return;
+          }
+          imgs.forEach((im, i) => { im.style.display = (i === idx ? 'block' : 'none'); im.style.opacity = '1'; });
+          runShake(to, h.x, h.y, action); cur = idx; return;
+        }
+        if (blend !== 'crossfade' || fadeMs <= 0) {
+          imgs.forEach((im, i) => { im.style.display = (i === idx ? 'block' : 'none'); im.style.opacity = '1'; });
+          cur = idx; return;
+        }
+        const from = imgs[cur];
+        to.style.display = 'block'; to.style.opacity = '0';
+        const t0 = performance.now();
+        cancelAnimationFrame(fadeReq);
+        (function raf(t) {
+          const p = Math.min(1, (t - t0) / Math.max(1, fadeMs));
+          from.style.opacity = String(1 - p);
+          to.style.opacity = String(p);
+          if (p < 1) fadeReq = requestAnimationFrame(raf);
+          else { from.style.display = 'none'; from.style.opacity = '1'; to.style.opacity = '1'; cur = idx; }
+        })(t0);
+      }
+
+      function finish() {
+        if (!persist) setTimeout(() => imgs.forEach(im => im.remove()), 60);
+        else if (dedupe) imgs.forEach(im => { if (im.style.display !== 'block') im.remove(); });
+      }
+
+      const firstSrc = frames[(Array.isArray(pattern) && pattern.length) ? pattern[0] : 0];
+      const preloadFirst = preloadImage(firstSrc);
+      const runner = new Promise(resolve => {
+        let step = 0;
+        function tick() {
+          const frameIndex = clamp(pattern[step], 0, frames.length - 1);
+          show(frameIndex);
+
+          const hitByStep = (sfxOnStep != null && sfxOnStep === step);
+          const hitByFrame = (sfxOnFrame != null && sfxOnFrame === frameIndex);
+          if (sfxCfg && (hitByStep || hitByFrame) && (sfxRepeat || !sfxPlayed)) {
+            const src = (typeof sfxCfg === 'string') ? sfxCfg : sfxCfg.src;
+            const vol = (typeof sfxCfg === 'object' && sfxCfg.volume != null) ? sfxCfg.volume : 1.0;
+            if (src) {
+              if (!(sfxOnceFlg && sfxKey && sfxPlayedOnce.has(sfxKey))) {
+                playSfx(src, vol);
+                if (sfxOnceFlg && sfxKey) sfxPlayedOnce.add(sfxKey);
+              }
+            }
+            sfxPlayed = true;
+          }
+
+          let hold = durations[step] ?? baseInt;
+          if (jitter) hold = Math.max(16, hold + (Math.random() * jitter - jitter / 2));
+          const nextIdx = (step + 1 < pattern.length) ? clamp(pattern[step + 1], 0, frames.length - 1) : null;
+          if (nextIdx != null) preloadImage(frames[nextIdx]);
+          step++;
+          if (step < pattern.length) setTimeout(tick, hold);
+          else if (loopsLeft === Infinity || --loopsLeft > 0) { step = 0; setTimeout(tick, hold); }
+          else { finish(); resolve(); }
+        }
+
+        const start = () => {
+          if (preSfx) {
+            const src = (typeof preSfx === 'string') ? preSfx : preSfx.src;
+            const vol = (typeof preSfx === 'object' && preSfx.volume != null) ? preSfx.volume : 1.0;
+            if (src) playSfx(src, vol);
+          }
+          if (startDelay > 0) setTimeout(tick, startDelay); else tick();
+        };
+        preloadFirst.then(start);
+      });
+
+      if (action.blockWhilePlaying) {
+        h._busyPromise = runner.finally(() => { h._busyPromise = null; });
+        return h._busyPromise;
+      }
+      return runner;
+    }
+
+    /* 驗證頁面資源（快速抓 404） */
+    async function verifyResourcesForPage(cfg) {
+      const urls = new Set();
+      if (cfg?.page?.image) urls.add(cfg.page.image);
+      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
+      function scan(a) {
+        if (!a) return;
+        if (a.type === 'swapFrames') {
+          (a.frames || []).forEach(u => urls.add(u));
+          if (a.sfx?.src) urls.add(a.sfx.src);
+          if (a.preSfx) urls.add(typeof a.preSfx === 'string' ? a.preSfx : a.preSfx.src);
+        } else if (a.type === 'sfx') { if (a.src) urls.add(a.src); }
+        else if (a.type === 'series' || a.type === 'actions') {
+          const steps = a.steps || a.items || [];
+          steps.forEach(s => {
+            if (s.run && byId[s.run]?.action) scan(byId[s.run].action);
+            if (s.type) scan(s);
+          });
+        }
+      }
+      (cfg.hotspots || []).forEach(h => scan(h.action));
+      await Promise.all([...urls].map(async u => {
+        try { const r = await fetch(u, { method: 'HEAD' }); if (!r.ok) throw new Error(); }
+        catch (e) { console.warn('[Verify] missing:', u); }
+      }));
+    }
+
+    function elNS(name, ns = 'http://www.w3.org/2000/svg') { return document.createElementNS(ns, name); }
+
+    /* 啟動 */
+    window.addEventListener('DOMContentLoaded', () => loadPage(current));
+  </script>
+</body>
+
+</html>

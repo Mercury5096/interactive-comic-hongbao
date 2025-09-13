@@ -1,0 +1,191 @@
+{
+  "page": {
+    "image": "assets/images/pg10.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "none",
+    "requireAudioUnlock": false
+  },
+  "hotspots": [
+    {
+      "id": "p01",
+      "x": 671,
+      "y": 18,
+      "width": 549,
+      "height": 845,
+      "action": {
+        "type": "series",
+        "once": true,
+        "blockWhilePlaying": true,
+        "steps": [
+          {
+            "type": "swapFrames",
+            "frames": ["assets/images/effects/pg10/pg10-01.webp"],
+            "pattern": [0],
+            "durations": [120],
+            "persist": true,
+            "dedupe": true,
+            "loop": false,
+            "preSfx": { "src": "assets/audio/fuerteventura-loop.mp3", "volume": 0.5 },
+            "startDelay": 0,
+            "sfxOnce": true,
+            "sfxKey": "assets/audio/fuerteventura-loop.mp3"
+          },
+          { "type": "delay", "ms": 1000 },
+          { "run": "p02" },
+          { "type": "delay", "ms": 1200 },
+          { "run": "p03" },
+          { "type": "delay", "ms": 1500 },
+          { "run": "p04" },
+          { "type": "delay", "ms": 1500 },
+          { "run": "p05" },
+          { "type": "delay", "ms": 2400 }, 
+          { "run": "p06" },
+          { "type": "delay", "ms": 3500 },
+          { "run": "p07" },
+          { "type": "delay", "ms": 1000 },
+          { "run": "p08" },
+          { "type": "delay", "ms": 1000 }
+        ]
+      }
+    },
+    {
+      "id": "p02",
+      "x": 665,
+      "y": 756,
+      "width": 353,
+      "height": 109,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-02.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p03",
+      "x": 607,
+      "y": 871,
+      "width": 613,
+      "height": 865,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-03.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p04",
+      "x": 673,
+      "y": 1603,
+      "width": 350,
+      "height": 116,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-04.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p05",
+      "x": 18,
+      "y": 15,
+      "width": 677,
+      "height": 445,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-05.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "sfx": { "src": "assets/audio/car-door-opening5.mp3", "volume": 1.0 },
+        "sfxOnFrame": 0,
+        "sfxOnce": true,
+        "once": true,
+        "blockWhilePlaying": true
+      }
+    },
+    {
+      "id": "p06",
+      "x": 17,
+      "y": 473,
+      "width": 646,
+      "height": 473,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-06.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "startDelay": 300, 
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "sfx": { "src": "assets/audio/car_startdriveaway.mp3", "volume": 1.0 },
+        "sfxOnFrame": 0,
+        "sfxOnce": true,
+        "once": true,
+        "blockWhilePlaying": true
+      }
+    },
+    {
+      "id": "p07",
+      "x": 327,
+      "y": 430,
+      "width": 403,
+      "height": 199,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-07.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "startDelay": 600,    
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p08",
+      "x": 18,
+      "y": 958,
+      "width": 634,
+      "height": 782,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg10/pg10-08.webp"],
+        "pattern": [0],
+        "durations": [120],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    }
+  ]
+}

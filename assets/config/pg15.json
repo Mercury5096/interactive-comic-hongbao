@@ -1,0 +1,157 @@
+{
+    "page": {
+        "image": "assets/images/pg15.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 20,
+            "y": 16,
+            "width": 590,
+            "height": 395,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/burning.mp3",
+                        "volume": 1.0,
+                        "sfxOnce": true,
+                        "sfxKey": "fire-burn"
+                    },
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg15/pg15-01A.webp",
+                            "assets/images/effects/pg15/pg15-01B.webp"
+                        ],
+                        "pattern": [
+                            0,
+                            1,
+                            0,
+                            1
+                        ],
+                        "durations": [
+                            2500
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": 3,
+                        "blend": "crossfade",
+                        "fadeMs": 160,
+                        "jitterMs": 30
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p02"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p02",
+            "x": 337,
+            "y": 192,
+            "width": 322,
+            "height": 190,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg15/pg15-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 20,
+            "y": 430,
+            "width": 1208,
+            "height": 637,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/fizzlingmp.mp3",
+                        "volume": 1.0,
+                        "sfxOnce": true
+                    },
+                    {
+                        "type": "swapFrames",
+                        "shakeX": 18,
+                        "shakeY": 8,
+                        "shakeMs": 700,
+                        "shakeHz": 28,
+                        "decay": 0.85,
+                        "frames": [
+                            "assets/images/effects/pg15/pg15-03.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            120
+                        ],
+                        "startDelay": 0,
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 2000
+                    },
+                    {
+                        "run": "p04"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p04",
+            "x": 89,
+            "y": 1378,
+            "width": 525,
+            "height": 340,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg15/pg15-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

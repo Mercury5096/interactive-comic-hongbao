@@ -1,0 +1,141 @@
+{
+    "page": {
+        "image": "assets/images/pg05.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/bgm_main.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 804,
+            "y": 492,
+            "width": 242,
+            "height": 107,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg05/pg5-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p02",
+            "x": 649,
+            "y": 248,
+            "width": 205,
+            "height": 105,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg05/pg5-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 837,
+            "y": 631,
+            "width": 385,
+            "height": 592,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg05/light0.webp",
+                    "assets/images/effects/pg05/light1.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                "interval": 1000,
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "preSfx": {
+                    "src": "assets/audio/shadowboss.mp3",
+                    "volume": 1.0
+                }
+            }
+        },
+        {
+            "id": "p04",
+            "x": 113,
+            "y": 646,
+            "width": 306,
+            "height": 118,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg05/pg5-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "preSfx": {
+                    "src": "assets/audio/sudden-creep.mp3",
+                    "volume": 1.0
+                }
+            }
+        },
+        {
+            "id": "p05",
+            "x": 17,
+            "y": 1237,
+            "width": 377,
+            "height": 500,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg05/lightB0.webp",
+                    "assets/images/effects/pg05/lightB1.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                "interval": 800,
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

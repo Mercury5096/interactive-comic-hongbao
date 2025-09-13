@@ -1,0 +1,106 @@
+{
+    "page": {
+        "image": "assets/images/pg02.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/bgm_main.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 797,
+            "y": 19,
+            "width": 423,
+            "height": 412,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg02/lamp_off.webp",
+                    "assets/images/effects/pg02/lamp_on.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                "interval": 360
+            }
+        },
+        {
+            "id": "p02",
+            "x": 444,
+            "y": 17,
+            "width": 342,
+            "height": 413,
+            "action": {
+                "type": "sfx",
+                "src": "assets/audio/door-closing.mp3",
+                "volume": 0.9
+            }
+        },
+        {
+            "id": "p03",
+            "x": 20,
+            "y": 17,
+            "width": 407,
+            "height": 413,
+            "action": {
+                "type": "sfx",
+                "src": "assets/audio/high-heels.mp3",
+                "volume": 0.9
+            }
+        },
+        {
+            "id": "p04",
+            "x": 856,
+            "y": 458,
+            "width": 365,
+            "height": 598,
+            "action": {
+                "type": "sfx",
+                "src": "assets/audio/wind.mp3",
+                "volume": 0.9
+            }
+        },
+        {
+            "id": "p05",
+            "x": 22,
+            "y": 1076,
+            "width": 383,
+            "height": 659,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg02/frightened1.webp",
+                    "assets/images/effects/pg02/frightened2.webp",
+                    "assets/images/effects/pg02/frightened3.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    2,
+                    2,
+                    2
+                ],
+                "durations": [
+                    600,
+                    600,
+                    600,
+                    1000,
+                    1000
+                ],
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/creepy-sound.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 2
+            }
+        }
+    ]
+}

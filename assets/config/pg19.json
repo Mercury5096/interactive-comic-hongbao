@@ -1,0 +1,174 @@
+{
+  "page": {
+    "image": "assets/images/pg19.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/happy-whistle.mp3",
+    "requireAudioUnlock": false
+  },
+  "hotspots": [
+    {
+      "id": "p01",
+      "x": 730,
+      "y": 724,
+      "width": 291,
+      "height": 88,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg19/pg19-01.webp"],
+        "pattern": [0],
+        "durations": [150],
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "slideFrom": { "y": 200, "relative": true },
+        "slideMs": 600,
+        "blend": "crossfade",
+        "fadeMs": 600
+      }
+    },
+    {
+      "id": "p02",
+      "x": 914,
+      "y": 1606,
+      "width": 299,
+      "height": 122,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg19/pg19-02.webp"],
+        "pattern": [0],
+        "durations": [150],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+
+
+    {
+  "id": "p03",
+  "x": 414,
+  "y": 35,
+  "width": 303,
+  "height": 153,
+  "action": {
+    "type": "series",
+    "once": true,
+    "blockWhilePlaying": true,
+    "steps": [
+      {
+        "type": "bgm",
+        "src": "assets/audio/happy-whistle.mp3", 
+        "crossfadeMs": 1800,                        
+        "volume": 0.13,                             
+        "loop": true
+      },
+      { "type": "sfx", "src": "assets/audio/high-heels-run.mp3", "volume": 1.0, "sfxOnce": true },
+      {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg19/pg19-03.webp"],
+        "pattern": [0],
+        "durations": [150],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    ]
+  }
+},
+
+    {
+      "id": "p04",
+      "x": 26,
+      "y": 1098,
+      "width": 297,
+      "height": 151,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg19/pg19-04.webp"],
+        "pattern": [0],
+        "durations": [150],
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "sfx": { "src": "assets/audio/wind.mp3", "volume": 1.0 },
+        "sfxOnFrame": 0,
+        "sfxOnce": true,
+        "once": true,
+        "blockWhilePlaying": true
+      }
+    },
+
+    {
+      "id": "p05",
+      "x": 17,
+      "y": 1268,
+      "width": 656,
+      "height": 469,
+      "action": {
+        "type": "series",
+        "once": true,
+        "blockWhilePlaying": true,
+        "steps": [
+          { "type": "bgm", "src": "assets/audio/cinematic-thriller.mp3", "crossfadeMs": 600, "volume": 0.6, "loop": true },
+          {
+            "type": "swapFrames",
+            "frames": ["assets/images/effects/pg19/pg19-05.webp"],
+            "pattern": [0],
+            "durations": [150],
+            "persist": true,
+            "dedupe": true,
+            "loop": false
+          },
+          { "type": "delay", "ms": 600 },
+          { "run": "p06" },
+          { "type": "delay", "ms": 600 },
+          { "run": "p07" }
+        ]
+      }
+    },
+
+    {
+      "id": "p06",
+      "x": 402,
+      "y": 1627,
+      "width": 232,
+      "height": 94,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": ["assets/images/effects/pg19/pg19-06.webp"],
+        "pattern": [0],
+        "durations": [150],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p07",
+      "x": 31,
+      "y": 1683,
+      "width": 156,
+      "height": 42,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": [
+          "assets/images/effects/pg19/pg19-07A.webp",
+          "assets/images/effects/pg19/pg19-07B.webp",
+          "assets/images/effects/pg19/pg19-07C.webp",
+          "assets/images/effects/pg19/pg19-07D.webp",
+          "assets/images/effects/pg19/pg19-07E.webp"
+        ],
+        "pattern": [0,1,2,3,4,3,2,1,0],
+        "durations": [300,300,300,300,300,300,300,300,300],
+        "persist": true,
+        "dedupe": true,
+        "loop": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "page": {
+    "image": "assets/images/pg07.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3",
+    "requireAudioUnlock": false
+  },
+  "hotspots": [
+    {
+      "id": "p00",
+      "x": 18,
+      "y": 593,
+      "width": 1203,
+      "height": 613,
+      "action": {
+        "type": "series",
+        "steps": [
+          {
+            "type": "sfx",
+            "src": "assets/audio/estrange01.mp3",
+            "volume": 0.7
+          },
+          {
+            "run": "p01"
+          },
+          {
+            "type": "delay",
+            "ms": 800
+          },
+          {
+            "run": "p02"
+          },
+          {
+            "type": "delay",
+            "ms": 800
+          },
+          {
+            "run": "p03"
+          },
+          {
+            "type": "delay",
+            "ms": 800
+          },
+          {
+            "run": "p04"
+          }
+        ]
+      }
+    },
+    {
+      "id": "p01",
+      "x": 911,
+      "y": 916,
+      "width": 270,
+      "height": 181,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": [
+          "assets/images/effects/pg07/pg7-01.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p02",
+      "x": 375,
+      "y": 593,
+      "width": 427,
+      "height": 612,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": [
+          "assets/images/effects/pg07/pg7-02.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p03",
+      "x": 19,
+      "y": 594,
+      "width": 355,
+      "height": 610,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": [
+          "assets/images/effects/pg07/pg7-03.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
+        "persist": true,
+        "dedupe": true,
+        "loop": false
+      }
+    },
+    {
+      "id": "p04",
+      "x": 51,
+      "y": 773,
+      "width": 1158,
+      "height": 391,
+      "clickable": false,
+      "hint": false,
+      "action": {
+        "type": "swapFrames",
+        "frames": [
+          "assets/images/effects/pg07/pg7-04.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
+        "persist": true,
+        "dedupe": true,
+        "loop": false,
+        "blend": "crossfade",
+        "fadeMs": 700
+      }
+    }
+  ]
+}

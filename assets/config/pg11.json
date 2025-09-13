@@ -1,0 +1,249 @@
+{
+    "page": {
+        "image": "assets/images/pg11.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "none",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 750,
+            "y": 16,
+            "width": 472,
+            "height": 792,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "unlockAudio"
+                    },
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/high-heels2.mp3",
+                        "volume": 1.5,
+                        "sfxOnce": true
+                    },
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/eerie-bg.mp3",
+                        "volume": 0.8,
+                        "sfxOnce": true
+                    },
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg11/pg11-02.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            1
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false,
+                        "slideFrom": {
+                            "y": 220,
+                            "relative": true
+                        },
+                        "slideMs": 600
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p02",
+            "x": 22,
+            "y": 834,
+            "width": 1204,
+            "height": 901,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                   
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg11/pg11-03.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            120
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 1500
+                    },
+                    {
+                        "run": "p03"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 2000
+                    },
+                    {
+                        "run": "p04"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 1500
+                    },
+                    {
+                        "run": "p05"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 1500
+                    },
+                    {
+                        "run": "p06"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 1800
+                    },
+                    {
+                        "run": "p07"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 4500
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p03",
+            "x": 41,
+            "y": 846,
+            "width": 411,
+            "height": 163,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg11/pg11-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p04",
+            "x": 190,
+            "y": 1072,
+            "width": 261,
+            "height": 145,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg11/pg11-05.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p05",
+            "x": 59,
+            "y": 1239,
+            "width": 399,
+            "height": 178,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg11/pg11-06.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p06",
+            "x": 746,
+            "y": 911,
+            "width": 312,
+            "height": 184,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg11/pg11-07.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p07",
+            "x": 761,
+            "y": 1139,
+            "width": 417,
+            "height": 245,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg11/pg11-08.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

@@ -1,0 +1,206 @@
+{
+    "page": {
+        "image": "assets/images/pg04.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/bgm_main.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 795,
+            "y": 17,
+            "width": 426,
+            "height": 540,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    1
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/shock.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 0
+            }
+        },
+        {
+            "id": "p02",
+            "x": 425,
+            "y": 27,
+            "width": 227,
+            "height": 135,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-03.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    1
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/rain.mp3",
+                    "volume": 0.5
+                },
+                "sfxOnFrame": 0
+            }
+        },
+        {
+            "id": "p03",
+            "x": 114,
+            "y": 262,
+            "width": 329,
+            "height": 187,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "preSfx": {
+                    "src": "assets/audio/phone-ring-out-call.mp3",
+                    "volume": 1.0
+                },
+                "startDelay": 5000, 
+                "once": true,
+                "blockWhilePlaying": true,
+                "sfxOnce": true,
+                "sfxKey": "assets/audio/phone-ring-out-call.mp3"
+            }
+        },
+        {
+            "id": "p04",
+            "x": 636,
+            "y": 591,
+            "width": 282,
+            "height": 125,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-05.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p05",
+            "x": 616,
+            "y": 741,
+            "width": 270,
+            "height": 117,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-06.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p06",
+            "x": 939,
+            "y": 866,
+            "width": 285,
+            "height": 158,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-07.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p07",
+            "x": 764,
+            "y": 1407,
+            "width": 354,
+            "height": 183,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-08.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p08",
+            "x": 78,
+            "y": 1381,
+            "width": 234,
+            "height": 160,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg04/pg4-09.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

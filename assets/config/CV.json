@@ -1,0 +1,44 @@
+{
+  "page": {
+    "image": "assets/images/CV.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3",
+    "requireAudioUnlock": true
+  },
+  "hotspots": [
+    {
+      "id": "p01",
+      "x": 0,
+      "y": 0,
+      "width": 1241,
+      "height": 1754,
+      "action": {
+        "type": "swapFrames",
+        "frames": [
+          "assets/images/effects/cv/CV-A.webp",
+          "assets/images/effects/cv/CV-B.webp",
+          "assets/images/effects/cv/CV-C.webp",
+          "assets/images/effects/cv/CV-D.webp"
+        ],
+        "pattern": [
+          0,
+          1,
+          2,
+          1,
+          0,
+          1,
+          2,
+          3
+        ],
+        "interval": 600,
+        "loop": false,
+        "persist": true,
+        "dedupe": true,
+        "blend": "crossfade",
+        "fadeMs": 400,
+        "jitterMs": 0
+      }
+    }
+  ]
+}

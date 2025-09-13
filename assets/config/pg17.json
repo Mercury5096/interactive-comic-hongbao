@@ -1,0 +1,209 @@
+{
+    "page": {
+        "image": "assets/images/pg17.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 18,
+            "y": 16,
+            "width": 1207,
+            "height": 608,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/female-heels-running-v2.mp3",
+                        "volume": 1.0
+                    },
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/burning-monster.mp3",
+                        "volume": 0.1
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 900
+                    },
+                    {
+                        "type": "sfx",
+                        "src": "assets/audio/explosion.mp3",
+                        "volume": 0.5
+                    },
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg17/pg17-01.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            800
+                        ], 
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false,
+                        "blend": "crossfade",
+                        "fadeMs": 1200
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p02",
+            "x": 17,
+            "y": 646,
+            "width": 1204,
+            "height": 764,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "unlockAudio"
+                    },
+                    {
+                        "type": "bgm",
+                        "src": "assets/audio/background-music-soft-calm.mp3",
+                        "crossfadeMs": 600,
+                        "volume": 0.6,
+                        "loop": true
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p03"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 860
+                    },
+                    {
+                        "run": "p04"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 860
+                    },
+                    {
+                        "run": "p05"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 860
+                    },
+                    {
+                        "run": "p06"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p03",
+            "x": 44,
+            "y": 669,
+            "width": 322,
+            "height": 191,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg17/pg17-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    200
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p04",
+            "x": 839,
+            "y": 999,
+            "width": 329,
+            "height": 220,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg17/pg17-03.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    200
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p05",
+            "x": 30,
+            "y": 1131,
+            "width": 383,
+            "height": 222,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg17/pg17-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p06",
+            "x": 1001,
+            "y": 1384,
+            "width": 211,
+            "height": 190,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg17/pg17-05.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

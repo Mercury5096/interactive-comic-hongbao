@@ -1,0 +1,240 @@
+{
+    "page": {
+        "image": "assets/images/pg12.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/bgm_main.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 972,
+            "y": 319,
+            "width": 229,
+            "height": 174,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg12/pg12-01.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p02",
+            "x": 643,
+            "y": 471,
+            "width": 318,
+            "height": 245,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg12/pg12-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 18,
+            "y": 14,
+            "width": 618,
+            "height": 468,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "unlockAudio"
+                    },
+                    {
+                        "type": "bgm",
+                        "src": "assets/audio/weng.mp3",
+                        "crossfadeMs": 400,
+                        "volume": 0.6,
+                        "loop": true
+                    },
+                    {
+                        "type": "swapFrames",
+                        "shakeX": 10,
+                        "shakeMs": 500,
+                        "shakeHz": 22,
+                        "decay": 0.9,
+                        "frames": [
+                            "assets/images/effects/pg12/pg12-03.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                            120
+                        ],
+                        "startDelay": 30,
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false,
+                        "disableShake": true
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p04"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p04",
+            "x": 10,
+            "y": 372,
+            "width": 383,
+            "height": 153,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg12/pg12-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/designed-blood.mp3",
+                    "volume": 2.0
+                },
+                "sfxOnFrame": 0,
+                "sfxOnce": true,
+                "once": true,
+                "blockWhilePlaying": true
+            }
+        },
+        {
+            "id": "p05",
+            "x": 20,
+            "y": 892,
+            "width": 1202,
+            "height": 851,
+            "action": {
+                "type": "series",
+                "once": true,
+                "blockWhilePlaying": true,
+                "steps": [
+                    {
+                        "type": "swapFrames",
+                        "frames": [
+                            "assets/images/effects/pg12/pg12-05.webp"
+                        ],
+                        "pattern": [
+                            0
+                        ],
+                        "durations": [
+                           200
+                        ],
+                        "persist": true,
+                        "dedupe": true,
+                        "loop": false,
+                        "blend": "crossfade",
+                        "fadeMs": 160,
+                        "jitterMs": 30,
+                        "preSfx": {
+                            "src": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
+                            "volume": 1.0
+                        },
+                        "startDelay": 0,
+                        "sfxOnce": true,
+                        "sfxKey": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 560
+                    },
+                    {
+                        "run": "p06"
+                    },
+                    {
+                        "type": "delay",
+                        "ms": 760
+                    },
+                    {
+                        "run": "p07"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "p06",
+            "x": 872,
+            "y": 1313,
+            "width": 319,
+            "height": 183,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg12/pg12-06.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p07",
+            "x": 83,
+            "y": 1028,
+            "width": 333,
+            "height": 209,
+            "clickable": false,
+            "hint": false,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg12/pg12-07.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    120
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

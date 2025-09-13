@@ -1,0 +1,172 @@
+{
+    "page": {
+        "image": "assets/images/pg18.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/happy-whistle.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 870,
+            "y": 18,
+            "width": 350,
+            "height": 542,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-01.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "slideFrom": {
+                    "y": 200,
+                    "relative": true
+                },
+                "slideMs": 600,
+                "blend": "crossfade",
+                "fadeMs": 600
+            }
+        },
+        {
+            "id": "p02",
+            "x": 671,
+            "y": 337,
+            "width": 164,
+            "height": 135,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 24,
+            "y": 853,
+            "width": 369,
+            "height": 186,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-03.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p04",
+            "x": 836,
+            "y": 1453,
+            "width": 302,
+            "height": 193,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p05",
+            "x": 458,
+            "y": 1083,
+            "width": 298,
+            "height": 157,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-05.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p06",
+            "x": 384,
+            "y": 1577,
+            "width": 364,
+            "height": 150,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-06.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p07",
+            "x": 50,
+            "y": 1348,
+            "width": 310,
+            "height": 201,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg18/pg18-07.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

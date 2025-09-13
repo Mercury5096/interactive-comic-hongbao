@@ -1,0 +1,107 @@
+{
+    "page": {
+        "image": "assets/images/pg03.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/bgm_main.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 540,
+            "y": 528,
+            "width": 404,
+            "height": 130,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg03/對話-01.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p02",
+            "x": 349,
+            "y": 781,
+            "width": 398,
+            "height": 184,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg03/對話-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 402,
+            "y": 1362,
+            "width": 318,
+            "height": 154,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg03/對話-03.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "sfx": {
+                    "src": "assets/audio/shock.mp3",
+                    "volume": 1.0
+                },
+                "sfxOnFrame": 0,
+                "sfxOnce": true,
+                "once": true,
+                "blockWhilePlaying": true
+            }
+        },
+        {
+            "id": "p04",
+            "x": 117,
+            "y": 1565,
+            "width": 237,
+            "height": 155,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg03/對話-04.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        }
+    ]
+}

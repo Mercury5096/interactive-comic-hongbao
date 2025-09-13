@@ -1,0 +1,136 @@
+{
+    "page": {
+        "image": "assets/images/pg08.webp",
+        "width": 1241,
+        "height": 1754,
+        "bgm": "assets/audio/bgm_main.mp3",
+        "requireAudioUnlock": false
+    },
+    "hotspots": [
+        {
+            "id": "p01",
+            "x": 32,
+            "y": 32,
+            "width": 410,
+            "height": 130,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg08/pg08-01.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p02",
+            "x": 411,
+            "y": 249,
+            "width": 257,
+            "height": 171,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg08/pg08-02.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p03",
+            "x": 17,
+            "y": 641,
+            "width": 561,
+            "height": 645,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg08/pg08-03.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false
+            }
+        },
+        {
+            "id": "p04",
+            "x": 810,
+            "y": 1304,
+            "width": 412,
+            "height": 431,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg08/pg08-04A.webp",
+                    "assets/images/effects/pg08/pg08-04B.webp"
+                ],
+                "pattern": [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                
+                ],
+                "interval": 500,
+                "loop": 2,
+                "persist": true,
+                "dedupe": true,
+                "blend": "crossfade",
+                "fadeMs": 400,
+                "jitterMs": 20,
+                "preSfx": {
+                    "src": "assets/audio/tv-glitch.mp3",
+                    "volume": 1.0
+                }
+            }
+        },
+        {
+            "id": "p05",
+            "x": 21,
+            "y": 1333,
+            "width": 308,
+            "height": 195,
+            "action": {
+                "type": "swapFrames",
+                "frames": [
+                    "assets/images/effects/pg08/pg08-05.webp"
+                ],
+                "pattern": [
+                    0
+                ],
+                "durations": [
+                    150
+                ],
+                "persist": true,
+                "dedupe": true,
+                "loop": false,
+                "preSfx": {
+                    "src": "assets/audio/high-heels.mp3",
+                    "volume": 1.0
+                }
+            }
+        }
+    ]
+}
