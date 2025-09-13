@@ -101,7 +101,7 @@ header .title { font-size: 16px; opacity: .9; }
 /* 4) 載入遮罩（置中小卡片） */
 .loadingMask {
   position: fixed; inset: 0; display: none; place-items: center;
-  background: rgba(0,0,0,.55); z-index: 60;
+  background: rgba(0,0,0,.55); z-index: 10000;
 }
 .loading .loadingMask { display: grid; }
 .loadingCard {
@@ -109,4 +109,19 @@ header .title { font-size: 16px; opacity: .9; }
   border: 1px solid rgba(255,255,255,.18);
   border-radius: 12px; padding: 14px 16px; text-align: center;
   color: #e8f0ff; font-size: 14px;
+}
+
+/* === 載入中 Spinner 動畫 === */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 8px auto 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

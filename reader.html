@@ -82,6 +82,34 @@
       document.documentElement.scrollTop = 0;
     }
 
+    // 放在 script 其他全域變數旁
+    let __audioGuardsBound = false;
+
+    async function resilientAutoBgm() {
+      try { if (audioUnlocked) await unlockAudioAndPlayBgm(); } catch (e) { }
+
+      const onceResume = async () => {
+        window.removeEventListener('pointerdown', onceResume, { capture: true });
+        window.removeEventListener('keydown', onceResume, { capture: true });
+        audioUnlocked = true; sessionStorage.setItem('audioUnlocked', '1');
+        try { await unlockAudioAndPlayBgm(); } catch (e) { }
+      };
+      window.addEventListener('pointerdown', onceResume, { capture: true, once: true });
+      window.addEventListener('keydown', onceResume, { capture: true, once: true });
+
+      // ★ 這段只綁一次
+      if (!__audioGuardsBound) {
+        document.addEventListener('visibilitychange', async () => {
+          if (document.visibilityState === 'visible' && audioUnlocked) {
+            try { await unlockAudioAndPlayBgm(); } catch (e) { }
+          }
+        });
+        window.addEventListener('pageshow', async () => {
+          if (audioUnlocked) { try { await unlockAudioAndPlayBgm(); } catch (e) { } }
+        });
+        __audioGuardsBound = true;
+      }
+    }
 
 
 
@@ -813,8 +841,11 @@
   </script>
 
   <div class="loadingMask" id="loadingMask">
-    <div class="loadingCard">頁面載入中…</div>
+     <div class="loadingCard">
+    <div>載入中，請稍候…</div>
+    <div class="spinner"></div>
   </div>
+</div>
 
 </body>
 
