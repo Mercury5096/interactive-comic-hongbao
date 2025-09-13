@@ -139,6 +139,32 @@
         hideAudioHint();
       }
     }
+    async function resilientAutoBgm() {
+      // 1) 若已解鎖且有曲目 → 嘗試播放；失敗就算了
+      try {
+        if (audioUnlocked) await unlockAudioAndPlayBgm();
+      } catch (e) { /* 忽略 NotAllowedError */ }
+
+      // 2) 無論是否成功，都掛一個「首次任意手勢就播放」的保險
+      const onceResume = async () => {
+        window.removeEventListener('pointerdown', onceResume, { capture: true });
+        window.removeEventListener('keydown', onceResume, { capture: true });
+        audioUnlocked = true; sessionStorage.setItem('audioUnlocked', '1');
+        await unlockAudioAndPlayBgm();
+      };
+      window.addEventListener('pointerdown', onceResume, { capture: true, once: true });
+      window.addEventListener('keydown', onceResume, { capture: true, once: true });
+
+      // 3) 回到前景自動恢復（某些瀏覽器會在重整/切分頁後暫停）
+      document.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState === 'visible' && audioUnlocked) {
+          try { await unlockAudioAndPlayBgm(); } catch (e) { }
+        }
+      });
+      window.addEventListener('pageshow', async () => {
+        if (audioUnlocked) { try { await unlockAudioAndPlayBgm(); } catch (e) { } }
+      });
+    }
 
 
     function preloadImage(url) {
@@ -284,79 +310,132 @@
       current = pageId;
       pageTitle.textContent = `載入中… ${pageId}`;
       stopAllSfx(); sfxPlayedOnce.clear();
+
+      // 進入 loading 狀態：藏熱區、藏效果層、顯示遮罩
+      document.body.classList.add('loading');
+      document.body.classList.add('fx-hidden');
+      const loadingMask = document.getElementById('loadingMask');
+
       fxLayer.innerHTML = '';
       hotspotLayer.innerHTML = '';
-
-      // 切頁瞬間：先關掉淡入狀態 + 隱藏效果層，避免殘影/閃片
       pageImg.classList.remove('ready');
-      document.body.classList.add('fx-hidden');
 
-      // 載入本頁設定
+      // 抓 JSON
       const res = await fetch(`assets/config/${pageId}.json`);
       cfg = await res.json();
 
-      // 設圖與尺寸
+      // 先設底圖 src（不顯示），並決定 viewBox 尺寸
       pageImg.src = cfg.page.image;
       pageImg.alt = pageId;
+
       PAGE_W = cfg.page.width || 0;
       PAGE_H = cfg.page.height || 0;
-      if (PAGE_W && PAGE_H) {
+      if (PAGE_W && PAGE_H) svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+
+      // 收集本頁所有需要預載的資源
+      const assets = collectAssetsForPage(cfg);
+
+      // 1) 等底圖「真的解碼」好
+      const baseReady = new Promise(ok => {
+        if (pageImg.complete && pageImg.naturalWidth) ok();
+        else pageImg.addEventListener('load', () => ok(), { once: true });
+      });
+
+      // 2) 預載互動切片圖片
+      const imgsReady = Promise.all(assets.images.map(u => preloadImage(u)));
+
+      // 3) 薄預載音效/BGM（抓檔→有 cache；實際播放仍需手勢允許）
+      const audsReady = Promise.all(assets.audios.map(u => preloadAudioLight(u)));
+
+      // 等三者都完成
+      await Promise.all([baseReady, imgsReady, audsReady]);
+
+      // 若 JSON 沒給尺寸，這時候底圖已載好，可以取 naturalWidth/Height
+      if (!PAGE_W || !PAGE_H) {
+        PAGE_W = pageImg.naturalWidth;
+        PAGE_H = pageImg.naturalHeight;
         svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
       }
 
-      // 圖片尺寸＆淡入控制
-      if (!PAGE_W || !PAGE_H) {
-        // 需要從圖片本身取得尺寸
-        if (pageImg.complete && pageImg.naturalWidth) {
-          PAGE_W = pageImg.naturalWidth;
-          PAGE_H = pageImg.naturalHeight;
-          svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-          // 底圖就緒 → 顯示
-          pageImg.classList.add('ready');
-          document.body.classList.remove('fx-hidden');
-        } else {
-          // 等圖片載完再顯示
-          await new Promise(r => pageImg.addEventListener('load', () => {
-            PAGE_W = pageImg.naturalWidth;
-            PAGE_H = pageImg.naturalHeight;
-            svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-            pageImg.classList.add('ready');
-            document.body.classList.remove('fx-hidden');
-            r();
-          }, { once: true }));
-        }
-      } else {
-        // 已有寬高，但圖片可能還在載：保險作法
-        if (pageImg.complete && pageImg.naturalWidth) {
-          pageImg.classList.add('ready');
-          document.body.classList.remove('fx-hidden');
-        } else {
-          pageImg.addEventListener('load', () => {
-            pageImg.classList.add('ready');
-            document.body.classList.remove('fx-hidden');
-          }, { once: true });
-        }
-      }
+      // 一切 OK → 顯示畫面（淡入底圖）、解除效果層隱藏，渲染熱區
+      pageImg.classList.add('ready');
+      document.body.classList.remove('fx-hidden');
+      document.body.classList.remove('loading');
 
-      // 後續流程維持不變
       pageTitle.textContent = `${pageId.toUpperCase()} · ${cfg.hotspots?.length || 0} 個互動格`;
       renderHotspots();
       goto(pageId);
 
-      if (cfg.page.requireAudioUnlock) showAudioHint();
-      else if (audioUnlocked) unlockAudioAndPlayBgm();
-      else {
-        const onceUnlock = () => {
-          window.removeEventListener('pointerdown', onceUnlock, { capture: true });
-          unlockAudioAndPlayBgm();
-        };
-        window.addEventListener('pointerdown', onceUnlock, { capture: true, once: true });
+      // 音訊策略：頁面標示需解鎖 → 顯示提示；否則照舊，但我們會更韌性地嘗試播放
+      if (cfg.page.requireAudioUnlock) {
+        showAudioHint();
+      } else {
+        // 嘗試自動播放；若失敗，掛保險
+        resilientAutoBgm();
       }
 
       verifyResourcesForPage(cfg);
 
-      // 背景預載前後一頁
+      // 預載前後一頁（體驗更順）
       prefetchNeighbors(pageId);
+    }
+
+
+    function collectAssetsForPage(cfg) {
+      const images = new Set();
+      const audios = new Set();
+
+      if (cfg?.page?.image) images.add(cfg.page.image);
+      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
+
+      function scanAction(a) {
+        if (!a) return;
+        if (a.type === 'swapFrames') {
+          (a.frames || []).forEach(u => images.add(u));
+          // sfx / preSfx 只做薄預載（不保證能自動播，但能先抓到檔）
+          const s = a.sfx; const pre = a.preSfx;
+          if (typeof s === 'string') audios.add(s);
+          else if (s?.src) audios.add(s.src);
+          if (typeof pre === 'string') audios.add(pre);
+          else if (pre?.src) audios.add(pre.src);
+        } else if (a.type === 'sfx') {
+          if (a.src) audios.add(a.src);
+        } else if (a.type === 'series' || a.type === 'actions') {
+          (a.steps || a.items || []).forEach(step => {
+            if (step?.run) {
+              const t = byId[step.run];
+              scanAction(step.action || t?.action);
+            } else if (step?.type) {
+              scanAction(step);
+            }
+          });
+        } else if (a.type === 'bgm') {
+          if (a.src && a.src !== 'none' && a.src !== 'stop') audios.add(a.src);
+        }
+      }
+
+      (cfg.hotspots || []).forEach(h => scanAction(h.action));
+      // 頁級 BGM（如果有設定）
+      const pageBgm = (cfg?.page?.bgm ?? '').toString().trim();
+      if (pageBgm && pageBgm !== 'none') audios.add(pageBgm);
+
+      return { images: [...images], audios: [...audios] };
+    }
+
+    function preloadAudioLight(url) {
+      // 不保證能「自動播放」，但可讓瀏覽器先抓檔並建立緩存
+      return new Promise(res => {
+        try {
+          const a = new Audio();
+          a.preload = 'auto';
+          a.src = url;
+          a.addEventListener('canplaythrough', () => res(), { once: true });
+          a.addEventListener('error', () => res(), { once: true });
+          // Safari 有時不觸發 canplaythrough，也給個 timeout 當保險
+          setTimeout(res, 1500);
+          a.load();
+        } catch { res(); }
+      });
     }
 
 
@@ -732,6 +811,11 @@
     /* 啟動 */
     window.addEventListener('DOMContentLoaded', () => loadPage(current));
   </script>
+
+  <div class="loadingMask" id="loadingMask">
+    <div class="loadingCard">頁面載入中…</div>
+  </div>
+
 </body>
 
 </html>
