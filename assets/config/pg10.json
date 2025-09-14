@@ -26,7 +26,7 @@
             "persist": true,
             "dedupe": true,
             "loop": false,
-            "preSfx": { "src": "assets/audio/fuerteventura-loop.mp3", "volume": 0.5 },
+            "preSfx": { "src": "assets/audio/fuerteventura-loop.mp3", "volume": 0.3 },
             "startDelay": 0,
             "sfxOnce": true,
             "sfxKey": "assets/audio/fuerteventura-loop.mp3"

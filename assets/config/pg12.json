@@ -165,7 +165,7 @@
                         "jitterMs": 30,
                         "preSfx": {
                             "src": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
-                            "volume": 1.0
+                            "volume": 0.5
                         },
                         "startDelay": 0,
                         "sfxOnce": true,

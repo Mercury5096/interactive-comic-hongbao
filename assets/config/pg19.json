@@ -15,13 +15,22 @@
       "height": 88,
       "action": {
         "type": "swapFrames",
-        "frames": ["assets/images/effects/pg19/pg19-01.webp"],
-        "pattern": [0],
-        "durations": [150],
+        "frames": [
+          "assets/images/effects/pg19/pg19-01.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
         "persist": true,
         "dedupe": true,
         "loop": false,
-        "slideFrom": { "y": 200, "relative": true },
+        "slideFrom": {
+          "y": 200,
+          "relative": true
+        },
         "slideMs": 600,
         "blend": "crossfade",
         "fadeMs": 600
@@ -35,48 +44,52 @@
       "height": 122,
       "action": {
         "type": "swapFrames",
-        "frames": ["assets/images/effects/pg19/pg19-02.webp"],
-        "pattern": [0],
-        "durations": [150],
+        "frames": [
+          "assets/images/effects/pg19/pg19-02.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
         "persist": true,
         "dedupe": true,
         "loop": false
       }
     },
-
-
-    {
+   {
   "id": "p03",
-  "x": 414,
-  "y": 35,
-  "width": 303,
-  "height": 153,
+  "x": 414, "y": 35, "width": 303, "height": 153,
   "action": {
     "type": "series",
     "once": true,
     "blockWhilePlaying": true,
     "steps": [
-      {
-        "type": "bgm",
-        "src": "assets/audio/happy-whistle.mp3", 
-        "crossfadeMs": 1800,                        
-        "volume": 0.13,                             
-        "loop": true
+      { "type": "unlockAudio" },
+
+      { "type": "bgm", "src": "assets/audio/happy-whistle.mp3", "crossfadeMs": 120, "volume": 0.05, "loop": true },
+
+      { "type": "sfx",
+        "src": "assets/audio/high-heels-run.mp3",
+        "volume": 1.0,
+        "sfxOnce": true,
+        "sfxKey": "pg19-high-heels-run.mp3"
       },
-      { "type": "sfx", "src": "assets/audio/high-heels-run.mp3", "volume": 1.0, "sfxOnce": true },
-      {
-        "type": "swapFrames",
+
+      { "type": "delay", "ms": 250 },
+
+      { "type": "bgm", "src": "assets/audio/happy-whistle.mp3", "crossfadeMs": 800, "volume": 0.13, "loop": true },
+
+      { "type": "swapFrames",
         "frames": ["assets/images/effects/pg19/pg19-03.webp"],
         "pattern": [0],
         "durations": [150],
-        "persist": true,
-        "dedupe": true,
-        "loop": false
+        "persist": true, "dedupe": true, "loop": false
       }
     ]
   }
 },
-
     {
       "id": "p04",
       "x": 26,
@@ -85,20 +98,28 @@
       "height": 151,
       "action": {
         "type": "swapFrames",
-        "frames": ["assets/images/effects/pg19/pg19-04.webp"],
-        "pattern": [0],
-        "durations": [150],
+        "frames": [
+          "assets/images/effects/pg19/pg19-04.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
         "persist": true,
         "dedupe": true,
         "loop": false,
-        "sfx": { "src": "assets/audio/wind.mp3", "volume": 1.0 },
+        "sfx": {
+          "src": "assets/audio/wind.mp3",
+          "volume": 1.0
+        },
         "sfxOnFrame": 0,
         "sfxOnce": true,
         "once": true,
         "blockWhilePlaying": true
       }
     },
-
     {
       "id": "p05",
       "x": 17,
@@ -110,24 +131,45 @@
         "once": true,
         "blockWhilePlaying": true,
         "steps": [
-          { "type": "bgm", "src": "assets/audio/cinematic-thriller.mp3", "crossfadeMs": 600, "volume": 0.6, "loop": true },
+          {
+            "type": "bgm",
+            "src": "assets/audio/cinematic-thriller.mp3",
+            "crossfadeMs": 600,
+            "volume": 0.9,
+            "loop": true
+          },
           {
             "type": "swapFrames",
-            "frames": ["assets/images/effects/pg19/pg19-05.webp"],
-            "pattern": [0],
-            "durations": [150],
+            "frames": [
+              "assets/images/effects/pg19/pg19-05.webp"
+            ],
+            "pattern": [
+              0
+            ],
+            "durations": [
+              150
+            ],
             "persist": true,
             "dedupe": true,
             "loop": false
           },
-          { "type": "delay", "ms": 600 },
-          { "run": "p06" },
-          { "type": "delay", "ms": 600 },
-          { "run": "p07" }
+          {
+            "type": "delay",
+            "ms": 600
+          },
+          {
+            "run": "p06"
+          },
+          {
+            "type": "delay",
+            "ms": 600
+          },
+          {
+            "run": "p07"
+          }
         ]
       }
     },
-
     {
       "id": "p06",
       "x": 402,
@@ -138,9 +180,15 @@
       "hint": false,
       "action": {
         "type": "swapFrames",
-        "frames": ["assets/images/effects/pg19/pg19-06.webp"],
-        "pattern": [0],
-        "durations": [150],
+        "frames": [
+          "assets/images/effects/pg19/pg19-06.webp"
+        ],
+        "pattern": [
+          0
+        ],
+        "durations": [
+          150
+        ],
         "persist": true,
         "dedupe": true,
         "loop": false
@@ -163,8 +211,28 @@
           "assets/images/effects/pg19/pg19-07D.webp",
           "assets/images/effects/pg19/pg19-07E.webp"
         ],
-        "pattern": [0,1,2,3,4,3,2,1,0],
-        "durations": [300,300,300,300,300,300,300,300,300],
+        "pattern": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          3,
+          2,
+          1,
+          0
+        ],
+        "durations": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
         "persist": true,
         "dedupe": true,
         "loop": true
