@@ -39,7 +39,7 @@
           { "run": "p04" },
           { "type": "delay", "ms": 1500 },
           { "run": "p05" },
-          { "type": "delay", "ms": 2400 }, 
+          { "type": "delay", "ms": 2400 },
           { "run": "p06" },
           { "type": "delay", "ms": 3500 },
           { "run": "p07" },
@@ -121,9 +121,7 @@
         "loop": false,
         "sfx": { "src": "assets/audio/car-door-opening5.mp3", "volume": 1.0 },
         "sfxOnFrame": 0,
-        "sfxOnce": true,
-        "once": true,
-        "blockWhilePlaying": true
+        "sfxOnce": true
       }
     },
     {
@@ -139,15 +137,12 @@
         "frames": ["assets/images/effects/pg10/pg10-06.webp"],
         "pattern": [0],
         "durations": [120],
-        "startDelay": 300, 
         "persist": true,
         "dedupe": true,
         "loop": false,
         "sfx": { "src": "assets/audio/car_startdriveaway.mp3", "volume": 1.0 },
         "sfxOnFrame": 0,
-        "sfxOnce": true,
-        "once": true,
-        "blockWhilePlaying": true
+        "sfxOnce": true
       }
     },
     {
@@ -163,7 +158,6 @@
         "frames": ["assets/images/effects/pg10/pg10-07.webp"],
         "pattern": [0],
         "durations": [120],
-        "startDelay": 600,    
         "persist": true,
         "dedupe": true,
         "loop": false

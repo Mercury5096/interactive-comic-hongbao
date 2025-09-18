@@ -3,7 +3,7 @@
     "image": "assets/images/pg19.webp",
     "width": 1241,
     "height": 1754,
-    "bgm": "assets/audio/happy-whistle.mp3",
+    "bgm": "none",
     "requireAudioUnlock": false
   },
   "hotspots": [
