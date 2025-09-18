@@ -60,6 +60,17 @@
     const params = new URLSearchParams(location.search);
     let current = pages.includes(params.get("p")) ? params.get("p") : "CV";
 
+    /* Loading helpers */
+    function showLoading(msg) {
+      document.body.classList.add('loading');
+      const tip = document.querySelector('#loading .tip');
+      if (tip && msg) tip.textContent = msg;
+    }
+    function hideLoading() {
+      document.body.classList.remove('loading');
+    }
+
+
     /* DOM */
     const pageTitle = document.getElementById('pageTitle');
     const pageImg = document.getElementById('pageImg');
@@ -162,6 +173,43 @@
         return jc;
       } catch { return null; }
     }
+
+    async function preloadCriticalAssets(cfg) {
+      const urls = new Set();
+      // 底圖（通常已載，但加進來沒害處）
+      if (cfg?.page?.image) urls.add(cfg.page.image);
+
+      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
+
+      function collect(a) {
+        if (!a) return;
+        if (a.type === 'swapFrames') {
+          const frames = a.frames || [];
+          const pattern = (Array.isArray(a.pattern) && a.pattern.length) ? a.pattern : frames.map((_, i) => i);
+          const firstIdx = Math.max(0, Math.min(frames.length - 1, pattern[0] ?? 0));
+          if (frames[firstIdx]) urls.add(frames[firstIdx]);
+
+          const s = a.sfx;        // 點擊即會用到的 SFX
+          const pre = a.preSfx;   // 進場預 SFX
+          if (typeof s === 'string') urls.add(s); else if (s?.src) urls.add(s.src);
+          if (typeof pre === 'string') urls.add(pre); else if (pre?.src) urls.add(pre.src);
+        } else if (a.type === 'series' || a.type === 'actions') {
+          const steps = a.steps || a.items || [];
+          // 只抓第一步需要的資源（避免等待過久）
+          const first = steps[0];
+          if (first?.run) {
+            const t = byId[first.run];
+            collect(first.action || t?.action);
+          } else if (first?.type) {
+            collect(first);
+          }
+        }
+      }
+
+      (cfg.hotspots || []).forEach(h => collect(h.action));
+      await Promise.all([...urls].map(url => preloadImage(url)));
+    }
+
 
     function prefetchNeighbors(currentId) {
       const i = pages.indexOf(currentId);
@@ -281,82 +329,99 @@
     let cfg = null; let PAGE_W = null, PAGE_H = null;
 
     async function loadPage(pageId) {
-      current = pageId;
-      pageTitle.textContent = `載入中… ${pageId}`;
-      stopAllSfx(); sfxPlayedOnce.clear();
-      fxLayer.innerHTML = '';
-      hotspotLayer.innerHTML = '';
+      showLoading(`載入中… ${pageId}`);
 
-      // 切頁瞬間：先關掉淡入狀態 + 隱藏效果層，避免殘影/閃片
-      pageImg.classList.remove('ready');
-      document.body.classList.add('fx-hidden');
+      try {
+        current = pageId;
+        pageTitle.textContent = `載入中… ${pageId}`;
+        stopAllSfx(); sfxPlayedOnce.clear();
+        fxLayer.innerHTML = '';
+        hotspotLayer.innerHTML = '';
+        pageImg.classList.remove('ready');
+        document.body.classList.add('fx-hidden');
 
-      // 載入本頁設定
-      const res = await fetch(`assets/config/${pageId}.json`);
-      cfg = await res.json();
+        const res = await fetch(`assets/config/${pageId}.json`);
+        cfg = await res.json();
 
-      // 設圖與尺寸
-      pageImg.src = cfg.page.image;
-      pageImg.alt = pageId;
-      PAGE_W = cfg.page.width || 0;
-      PAGE_H = cfg.page.height || 0;
-      if (PAGE_W && PAGE_H) {
-        svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-      }
-
-      // 圖片尺寸＆淡入控制
-      if (!PAGE_W || !PAGE_H) {
-        // 需要從圖片本身取得尺寸
-        if (pageImg.complete && pageImg.naturalWidth) {
-          PAGE_W = pageImg.naturalWidth;
-          PAGE_H = pageImg.naturalHeight;
+        // 設圖與尺寸
+        pageImg.src = cfg.page.image;
+        pageImg.alt = pageId;
+        PAGE_W = cfg.page.width || 0;
+        PAGE_H = cfg.page.height || 0;
+        if (PAGE_W && PAGE_H) {
           svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-          // 底圖就緒 → 顯示
-          pageImg.classList.add('ready');
-          document.body.classList.remove('fx-hidden');
-        } else {
-          // 等圖片載完再顯示
-          await new Promise(r => pageImg.addEventListener('load', () => {
+        }
+
+        // ★ 永遠等底圖解碼完成（避免 loading 太早關）
+        if (pageImg.decode) {
+          try { await pageImg.decode(); } catch (e) { /* 某些舊瀏覽器可能丟錯，忽略即可 */ }
+        } else if (!pageImg.complete || !pageImg.naturalWidth) {
+          await new Promise(r => pageImg.addEventListener('load', r, { once: true }));
+        }
+
+
+        // 圖片尺寸＆淡入控制
+        if (!PAGE_W || !PAGE_H) {
+          // 需要從圖片本身取得尺寸
+          if (pageImg.complete && pageImg.naturalWidth) {
             PAGE_W = pageImg.naturalWidth;
             PAGE_H = pageImg.naturalHeight;
             svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-            pageImg.classList.add('ready');
-            document.body.classList.remove('fx-hidden');
-            r();
-          }, { once: true }));
-        }
-      } else {
-        // 已有寬高，但圖片可能還在載：保險作法
-        if (pageImg.complete && pageImg.naturalWidth) {
-          pageImg.classList.add('ready');
-          document.body.classList.remove('fx-hidden');
+            // 底圖就緒 → 顯示
+            // pageImg.classList.add('ready');
+            //document.body.classList.remove('fx-hidden');
+          } else {
+            // 等圖片載完再顯示
+            await new Promise(r => pageImg.addEventListener('load', () => {
+              PAGE_W = pageImg.naturalWidth;
+              PAGE_H = pageImg.naturalHeight;
+              svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+              //pageImg.classList.add('ready');
+              //document.body.classList.remove('fx-hidden');
+              r();
+            }, { once: true }));
+          }
         } else {
-          pageImg.addEventListener('load', () => {
-            pageImg.classList.add('ready');
-            document.body.classList.remove('fx-hidden');
-          }, { once: true });
+          // 已有寬高，但圖片可能還在載：保險作法
+          if (pageImg.complete && pageImg.naturalWidth) {
+            //pageImg.classList.add('ready');
+            //document.body.classList.remove('fx-hidden');
+          } else {
+            pageImg.addEventListener('load', () => {
+              //pageImg.classList.add('ready');
+              //document.body.classList.remove('fx-hidden');
+            }, { once: true });
+          }
         }
+
+        await preloadCriticalAssets(cfg);
+        // 後續流程維持不變
+        pageTitle.textContent = `${pageId.toUpperCase()} · ${cfg.hotspots?.length || 0} 個互動格`;
+        renderHotspots();
+        goto(pageId);
+
+        if (cfg.page.requireAudioUnlock) showAudioHint();
+        else if (audioUnlocked) unlockAudioAndPlayBgm();
+        else {
+          const onceUnlock = () => {
+            window.removeEventListener('pointerdown', onceUnlock, { capture: true });
+            unlockAudioAndPlayBgm();
+          };
+          window.addEventListener('pointerdown', onceUnlock, { capture: true, once: true });
+        }
+
+        verifyResourcesForPage(cfg);
+
+        // 背景預載前後一頁
+        prefetchNeighbors(pageId);
+        // ★ 把會「一點就用到」的素材第一幀先解碼好，確保一開始點就不卡
+
+        pageImg.classList.add('ready');
+        document.body.classList.remove('fx-hidden');
+
+      } finally {
+        hideLoading();   // ← 不管成功或錯誤都會關掉遮罩
       }
-
-      // 後續流程維持不變
-      pageTitle.textContent = `${pageId.toUpperCase()} · ${cfg.hotspots?.length || 0} 個互動格`;
-      renderHotspots();
-      goto(pageId);
-
-      if (cfg.page.requireAudioUnlock) showAudioHint();
-      else if (audioUnlocked) unlockAudioAndPlayBgm();
-      else {
-        const onceUnlock = () => {
-          window.removeEventListener('pointerdown', onceUnlock, { capture: true });
-          unlockAudioAndPlayBgm();
-        };
-        window.addEventListener('pointerdown', onceUnlock, { capture: true, once: true });
-      }
-
-      verifyResourcesForPage(cfg);
-
-      // 背景預載前後一頁
-      prefetchNeighbors(pageId);
     }
 
 
@@ -732,6 +797,15 @@
     /* 啟動 */
     window.addEventListener('DOMContentLoaded', () => loadPage(current));
   </script>
+
+  <!-- Loading 覆蓋層 -->
+  <div id="loading" class="loading" aria-live="polite" aria-busy="true">
+    <div class="loading-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="tip">載入中…</div>
+    </div>
+  </div>
+
 </body>
 
 </html>
