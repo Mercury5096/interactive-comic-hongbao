@@ -1,0 +1,225 @@
+{
+  "page": {
+    "title": "第 13 頁 (B路線)",
+    "image": "assets/images/pg13-BE.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Step 1: 等待點擊 p01 (右上角)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [
+        { "x": 718, "y": 22, "width": 248, "height": 188 }
+      ]
+    },
+    {
+      "stepId": 2,
+      "comment": "Step 2: 顯示 p01 (圖片)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 3,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-01.webp",
+          "x": 718, "y": 22, "width": 248, "height": 188,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Step 3: 等待點擊 p02 (右側驚訝特寫)",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 }
+      ],
+      "hotspots": [
+        { "x": 1019, "y": 491, "width": 100, "height": 68 }
+      ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Step 4: 顯示 p02 + 音效 (Gasping)",
+      "type": "auto",
+      "duration": 600,
+      "nextStep": 5,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "sfx", "src": "assets/audio/women-gasping.mp3" },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-02.webp",
+          "x": 1019, "y": 491, "width": 100, "height": 68,
+          "cssClass": "fx-shake"
+        }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Step 5: 等待點擊 p03 (右中)",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 }
+      ],
+      "hotspots": [
+        { "x": 718, "y": 479, "width": 181, "height": 181 }
+      ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Step 6: 顯示 p03",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-03.webp",
+          "x": 718, "y": 479, "width": 181, "height": 181,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Step 7: 等待點擊 p04 (左中)",
+      "type": "interaction",
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 }
+      ],
+      "hotspots": [
+        { "x": 227, "y": 308, "width": 220, "height": 171 }
+      ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Step 8: 顯示 p04",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 9,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-04.webp",
+          "x": 227, "y": 308, "width": 220, "height": 171,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Step 9: 等待點擊 p05 (下方大圖 - 觸發連續動作)",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 }
+      ],
+      "hotspots": [
+        { "x": 19, "y": 541, "width": 714, "height": 996 }
+      ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Step 10: p05 連續動作 Part 1 - 電擊動畫 + 音效 (★延長至 3秒)",
+      "type": "auto",
+      "duration": 3000,
+      "nextStep": 11,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/electric-impact.mp3" },
+        {
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg13-B/pg13-05A.webp",
+            "assets/images/effects/pg13-B/pg13-05B.webp",
+            "assets/images/effects/pg13-B/pg13-05C.webp",
+            "assets/images/effects/pg13-B/pg13-05B.webp"
+          ],
+          "interval": 150,
+          "x": 19, "y": 541, "width": 714, "height": 996,
+          "cssClass": "fx-vibrate"
+        }
+      ]
+    },
+    {
+      "stepId": 11,
+      "comment": "Step 11: p05 連續動作 Part 2 - 顯示 p06 (★延長至 1.5秒)",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 12,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-06.webp",
+          "x": 431, "y": 732, "width": 269, "height": 259,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 12,
+      "comment": "Step 12: p05 連續動作 Part 3 - 顯示 p08 (★延長至 1.5秒)",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 13,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-06.webp", "x": 431, "y": 732, "width": 269, "height": 259 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-08.webp",
+          "x": 20, "y": 1290, "width": 660, "height": 480,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 13,
+      "comment": "Step 13: 顯示 p07 (右下文字) 並結束 (★無熱區，自動停止)",
+      "type": "interaction",
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-06.webp", "x": 431, "y": 732, "width": 269, "height": 259 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13-B/pg13-08.webp", "x": 20, "y": 1290, "width": 660, "height": 480 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg13-B/pg13-07.webp",
+          "x": 44, "y": 1267, "width": 265, "height": 196,
+          "cssClass": "fx-fade-in"
+        }
+      ],
+      "hotspots": [
+      ]
+    }
+  ]
+}

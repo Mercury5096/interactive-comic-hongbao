@@ -6,8 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>互動式網頁漫畫 · Reader</title>
   <link rel="stylesheet" href="assets/css/reader.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>">
+  <style>
+    /* 確保 SVG 蓋在最上面且穿透點擊 */
+    .overlay {
+      pointer-events: none;
+    }
 
+    /* 只有帶有 .interactive 類別的群組才接受滑鼠事件 */
+    .hs.interactive {
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    /* 鎖定時的樣式 (雙重保險) */
+    .hs.locked {
+      display: none;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -23,789 +40,343 @@
   <div class="wrap">
     <div class="page" id="page">
       <img id="pageImg" src="" alt="" />
+
       <div class="overlay">
-        <svg id="svg" viewBox="0 0 10 10" preserveAspectRatio="none" aria-hidden="true">
+        <svg id="svg" viewBox="0 0 1241 1754" preserveAspectRatio="xMidYMid meet">
           <g id="fxLayer"></g>
           <g id="hotspotLayer"></g>
         </svg>
       </div>
     </div>
-    <div class="muted" style="max-width:var(--max);padding:6px 16px">提示：可互動格以淡黃色標示，點擊後立即消失並觸發效果／音效。</div>
   </div>
 
-  <!-- 底部 sticky 導覽列 -->
-  <div class="reader-bottom-bar" id="bottomBar">
-    <button id="btnPrevBottom" class="nav-btn">⟵ 上一頁</button>
-    <div class="spacer"></div>
-    <a class="nav-btn" href="index.html">目錄</a>
-    <button id="btnNextBottom" class="nav-btn">下一頁 ⟶</button>
-  </div>
-
-  <!-- 音訊解鎖提示 -->
-  <div id="audioHint"
-    style="position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6);z-index:10001;">
-    <div
-      style="background:rgba(15,23,32,.95);border:1px solid rgba(255,255,255,.18);padding:16px 18px;border-radius:12px;max-width:90vw;text-align:center;">
-      <div style="font-size:16px;margin-bottom:6px;">🔊 請點一下開啟聲音</div>
-      <div style="opacity:.8;font-size:13px;">為了遵守瀏覽器規則，需先點擊一次才能播放背景音樂與音效。</div>
-      <button id="audioHintBtn" class="btn" style="margin-top:10px;">好的，開啟聲音</button>
-    </div>
-  </div>
+  <div class="reader-bottom-bar"></div>
 
   <script>
-    /* ---------------- 全域設定 ---------------- */
-    const DEFAULT_BGM = "assets/audio/bgm_main.mp3";
-    const DEBUG_SFX_TOAST = false;
-    const pages = ["CV", "pg01", "pg02", "pg03", "pg04", "pg05", "pg06", "pg07", "pg08", "pg09", "pg10", "pg11", "pg12", "pg13", "pg14", "pg15", "pg16", "pg17", "pg18", "pg19"];
+    // === 全域變數 ===
+    let currentStep = 1;
+    let pageData = null;
+    let autoTimer = null;
+    let activeIntervals = []; // 存動畫計時器
+    let bgmAudio = null;      // ★ 新增：存 BGM 物件
+
+    // 取得網址參數
     const params = new URLSearchParams(location.search);
-    let current = pages.includes(params.get("p")) ? params.get("p") : "CV";
+    const pageId = params.get('page') || 'pg15';
 
-    /* Loading helpers */
-    function showLoading(msg) {
-      document.body.classList.add('loading');
-      const tip = document.querySelector('#loading .tip');
-      if (tip && msg) tip.textContent = msg;
+    // === 初始化 ===
+    async function init() {
+      const jsonPath = `assets/config/${pageId}.json`;
+
+      try {
+        console.log(`正在嘗試讀取: ${jsonPath}`);
+        const res = await fetch(jsonPath);
+
+        if (!res.ok) {
+          throw new Error(`找不到檔案 (HTTP ${res.status})`);
+        }
+
+        pageData = await res.json();
+        // ★ 新增這行：設定導航按鈕
+        setupNavigation(pageId);
+
+        // 1. 設定頁面資訊
+        document.title = pageData.page.title || `漫畫閱讀 - ${pageId}`;
+        document.getElementById('pageTitle').textContent = pageData.page.title || pageId;
+
+        // 2. 設定背景圖
+        const img = document.getElementById('pageImg');
+        img.src = pageData.page.image;
+        img.onload = () => img.classList.add('ready');
+
+        // 3. 設定畫布
+        const svg = document.getElementById('svg');
+        svg.setAttribute('viewBox', `0 0 ${pageData.page.width} ${pageData.page.height}`);
+
+        // ★ 4. 處理 BGM (背景音樂) ★
+        if (pageData.page.bgm) {
+          setupBGM(pageData.page.bgm);
+        }
+
+        // 5. 開始渲染第一步
+        renderStep(1);
+
+      } catch (err) {
+        console.error(err);
+        alert(`讀取錯誤：\n請確認 ${jsonPath} 是否存在。\n\n詳細錯誤：${err.message}`);
+      }
     }
-    function hideLoading() {
-      document.body.classList.remove('loading');
+
+    // ★ BGM 設定函數 (含自動播放解鎖) ★
+    function setupBGM(src) {
+      bgmAudio = new Audio(src);
+      bgmAudio.loop = true;  // 設定循環播放
+      bgmAudio.volume = 0.5; // 音量設為 50%，避免太大聲
+
+      // 嘗試直接播放
+      bgmAudio.play().then(() => {
+        console.log("BGM 自動播放成功");
+      }).catch(err => {
+        console.log("BGM 自動播放被阻擋，等待使用者點擊...", err);
+        // 如果失敗，添加一個「一次性」的點擊監聽器
+        document.addEventListener('click', () => {
+          if (bgmAudio.paused) {
+            bgmAudio.play();
+            console.log("使用者點擊，BGM 開始播放");
+          }
+        }, { once: true }); // once: true 表示這個監聽器只會執行一次就自動移除
+      });
     }
 
+    // === 核心：渲染步驟 ===
+    function renderStep(stepId) {
+      console.log(`執行步驟: ${stepId}`);
+      currentStep = stepId;
 
-    /* DOM */
-    const pageTitle = document.getElementById('pageTitle');
-    const pageImg = document.getElementById('pageImg');
-    const svg = document.getElementById('svg');
-    const fxLayer = document.getElementById('fxLayer');
-    const hotspotLayer = document.getElementById('hotspotLayer');
-    const btnPrev = document.getElementById('btnPrev');
-    const btnNext = document.getElementById('btnNext');
-    const btnPrevBottom = document.getElementById('btnPrevBottom');
-    const btnNextBottom = document.getElementById('btnNextBottom');
+      // 1. 清除上一步的熱點
+      const hotspotLayer = document.getElementById('hotspotLayer');
+      hotspotLayer.innerHTML = ''; 
+      
+      // ★ 2. 新增這行：清除上一步的特效/圖片 (解決 pg02 最後紅包殘留的問題)
+      document.getElementById('fxLayer').innerHTML = '';
 
-    // 換頁時不要還原上一個卷軸位置
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      // 3. 清除計時器與動畫
+      clearTimeout(autoTimer);
+      activeIntervals.forEach(id => clearInterval(id));
+      activeIntervals = [];
 
-    // 幫手：立刻回到頂部（多路徑保險）
-    function scrollTopInstant(smooth = false) {
-      const behavior = smooth ? 'smooth' : 'auto';
-      try { window.scrollTo({ top: 0, left: 0, behavior }); } catch (e) { window.scrollTo(0, 0); }
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    }
+      // 找步驟
+      const stepData = pageData.steps.find(s => s.stepId === stepId);
 
-
-
-
-    /* 音訊狀態 */
-    let audioUnlocked = (sessionStorage.getItem('audioUnlocked') === '1');
-    let bgm = null;
-    window.sfxPool = window.sfxPool || new Map();
-    const sfxPlayedOnce = new Set();
-
-    /* ---------------- 音訊解鎖 ---------------- */
-    const audioHint = document.getElementById('audioHint');
-    const audioHintBtn = document.getElementById('audioHintBtn');
-    function showAudioHint() { audioHint.style.display = 'grid'; }
-    function hideAudioHint() { audioHint.style.display = 'none'; }
-    audioHintBtn?.addEventListener('click', () => { unlockAudioAndPlayBgm(); });
-
-    async function unlockAudioAndPlayBgm() {
-      audioUnlocked = true;
-      sessionStorage.setItem('audioUnlocked', '1');
-
-      const pageBgm = (cfg?.page?.bgm ?? '').toString().trim();
-
-      // 本頁指定不播 BGM
-      if (pageBgm === 'none' || cfg?.page?.noBgm === true) {
-        if (bgm) { try { bgm.pause(); } catch (e) { } bgm = null; }
-        hideAudioHint();
+      if (!stepData) {
+        console.warn('找不到步驟資料，可能已結束');
         return;
       }
 
-      const desired = pageBgm || DEFAULT_BGM;
-
-      try {
-        if (!bgm) {
-          // 第一次建立同一條音軌
-          bgm = new Audio(desired);
-          bgm.loop = true;
-          bgm.volume = 0.3;
-          await bgm.play();
-        } else {
-          const want = new URL(desired, location.href).href;
-          if (bgm.src === want) {
-            // 同曲目：只拉音量，不換軌（避免卡一下）
-            if (bgm.paused) { try { await bgm.play(); } catch (e) { } }
-            else { tweenBgmVolume(bgm, 0.3, 600); }
-          } else {
-            // 換曲目才 crossfade
-            await crossfadeTo(desired, 800, 0.3);
-            if (bgm) { bgm.loop = true; bgm.volume = 0.3; }
-          }
-        }
-      } catch (e) {
-        console.warn('Audio unlock/play failed', e);
-      } finally {
-        // ★ 無論成功或失敗，都把提示關掉，避免遮擋互動
-        hideAudioHint();
-      }
-    }
-
-
-    function preloadImage(url) {
-      return new Promise((ok) => {
-        if (!url) return ok();
-        const img = new Image();
-        img.onload = () => ok();
-        img.onerror = () => ok();
-        img.src = url;
-        if (img.decode) img.decode().then(ok).catch(ok);
-      });
-    }
-
-    async function preloadPageConfig(pId) {
-      try {
-        const r = await fetch(`assets/config/${pId}.json`, { cache: 'force-cache' });
-        if (!r.ok) return null;
-        const jc = await r.json();
-        // 預先把下一頁底圖丟進解碼序列
-        await preloadImage(jc?.page?.image);
-        return jc;
-      } catch { return null; }
-    }
-
-    async function preloadCriticalAssets(cfg) {
-      const urls = new Set();
-      // 底圖（通常已載，但加進來沒害處）
-      if (cfg?.page?.image) urls.add(cfg.page.image);
-
-      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
-
-      function collect(a) {
-        if (!a) return;
-        if (a.type === 'swapFrames') {
-          const frames = a.frames || [];
-          const pattern = (Array.isArray(a.pattern) && a.pattern.length) ? a.pattern : frames.map((_, i) => i);
-          const firstIdx = Math.max(0, Math.min(frames.length - 1, pattern[0] ?? 0));
-          if (frames[firstIdx]) urls.add(frames[firstIdx]);
-
-          const s = a.sfx;        // 點擊即會用到的 SFX
-          const pre = a.preSfx;   // 進場預 SFX
-          if (typeof s === 'string') urls.add(s); else if (s?.src) urls.add(s.src);
-          if (typeof pre === 'string') urls.add(pre); else if (pre?.src) urls.add(pre.src);
-        } else if (a.type === 'series' || a.type === 'actions') {
-          const steps = a.steps || a.items || [];
-          // 只抓第一步需要的資源（避免等待過久）
-          const first = steps[0];
-          if (first?.run) {
-            const t = byId[first.run];
-            collect(first.action || t?.action);
-          } else if (first?.type) {
-            collect(first);
-          }
-        }
+      // 執行 Actions
+      if (stepData.actions) {
+        stepData.actions.forEach(action => executeAction(action));
       }
 
-      (cfg.hotspots || []).forEach(h => collect(h.action));
-      await Promise.all([...urls].map(url => preloadImage(url)));
-    }
-
-
-    function prefetchNeighbors(currentId) {
-      const i = pages.indexOf(currentId);
-      const next = pages[Math.min(pages.length - 1, i + 1)];
-      const prev = pages[Math.max(0, i - 1)];
-      if (next && next !== currentId) preloadPageConfig(next);
-      if (prev && prev !== currentId) preloadPageConfig(prev);
-    }
-
-
-    const clamp01 = v => Math.max(0, Math.min(1, v || 0));
-    let __bgmTweenCancel = null;
-    function tweenBgmVolume(audio, toVol, ms = 400) {
-      if (!audio) return;
-      if (typeof __bgmTweenCancel === 'function') __bgmTweenCancel();
-      const from = clamp01(audio.volume);
-      const target = clamp01(toVol);
-      const t0 = performance.now();
-      let stopped = false;
-      __bgmTweenCancel = () => { stopped = true; };
-      function tick(t) {
-        if (stopped) return;
-        const k = Math.max(0, Math.min(1, (t - t0) / Math.max(1, ms)));
-        audio.volume = clamp01(from + (target - from) * k);
-        if (k < 1) requestAnimationFrame(tick);
+      // 判斷互動類型
+      if (stepData.type === 'auto') {
+        const duration = stepData.duration || 1000;
+        autoTimer = setTimeout(() => {
+          renderStep(stepData.nextStep);
+        }, duration);
       }
-      requestAnimationFrame(tick);
-    }
-
-
-    async function crossfadeTo(nextSrc, ms = 800, targetVol = 0.6) {
-      // 若有尚在進行的 tween（例如 p03 的淡出），先取消，避免互搶
-      if (typeof __bgmTweenCancel === 'function') { __bgmTweenCancel(); __bgmTweenCancel = null; }
-
-      const prev = bgm;
-      const fromVol = prev ? clamp01(prev.volume) : 0;
-
-      const next = new Audio(nextSrc);
-      next.loop = true;
-      next.volume = 0;
-
-      try { await next.play(); } catch (e) { /* autoplay 例外忽略 */ }
-
-      const t0 = performance.now();
-      return new Promise(ok => {
-        (function raf(t) {
-          const k = Math.max(0, Math.min(1, (t - t0) / Math.max(1, ms)));
-          // 舊音軌：從「目前音量 fromVol」淡到 0
-          if (prev) prev.volume = clamp01(fromVol * (1 - k));
-          // 新音軌：從 0 淡到 targetVol
-          next.volume = clamp01(targetVol * k);
-
-          if (k < 1) requestAnimationFrame(raf);
-          else {
-            if (prev) { try { prev.pause(); } catch (e) { } }
-            bgm = next;
-            ok();
-          }
-        })(t0);
-      });
-    }
-
-
-    function stopAllSfx() {
-      if (!window.sfxPool) return;
-      window.sfxPool.forEach(a => { try { a.pause(); a.currentTime = 0; } catch (e) { } });
-      window.sfxPool.clear();
-    }
-
-    /* ---------------- 導覽 ---------------- */
-    function goto(pageId) {
-      const i = pages.indexOf(pageId);
-      const prev = pages[Math.max(0, i - 1)];
-      const next = pages[Math.min(pages.length - 1, i + 1)];
-      const prevUrl = `reader.html?p=${prev}`;
-      const nextUrl = `reader.html?p=${next}`;
-
-      // 頂部
-      btnPrev.href = prevUrl; btnNext.href = nextUrl;
-      btnPrev.classList.toggle('muted', prev === pageId);
-      btnNext.classList.toggle('muted', next === pageId);
-
-      // 底部
-      if (btnPrevBottom && btnNextBottom) {
-        btnPrevBottom.disabled = (prev === pageId);
-        btnNextBottom.disabled = (next === pageId);
-        btnPrevBottom.dataset.href = prevUrl;
-        btnNextBottom.dataset.href = nextUrl;
-      }
-    }
-    function navigateTo(p) {
-      // ★ 切頁一開始就回頂
-      scrollTopInstant();
-      if (!pages.includes(p)) return;
-      history.pushState({ p }, "", `reader.html?p=${p}`);
-      loadPage(p);
-    }
-    btnPrev.addEventListener('click', e => { e.preventDefault(); const p = new URL(btnPrev.href).searchParams.get('p'); navigateTo(p); });
-    btnNext.addEventListener('click', e => { e.preventDefault(); const p = new URL(btnNext.href).searchParams.get('p'); navigateTo(p); });
-    window.addEventListener('popstate', () => { const p = new URLSearchParams(location.search).get('p') || "CV"; loadPage(p); });
-    btnPrevBottom?.addEventListener('click', e => {
-      e.preventDefault();
-      const url = btnPrevBottom.dataset.href || btnPrev.href;
-      const p = new URL(url, location.href).searchParams.get('p');
-      navigateTo(p);
-    });
-    btnNextBottom?.addEventListener('click', e => {
-      e.preventDefault();
-      const url = btnNextBottom.dataset.href || btnNext.href;
-      const p = new URL(url, location.href).searchParams.get('p');
-      navigateTo(p);
-      requestAnimationFrame(scrollTopInstant);
-    });
-
-
-    /* ---------------- 載入 / 渲染 ---------------- */
-    let cfg = null; let PAGE_W = null, PAGE_H = null;
-
-    async function loadPage(pageId) {
-      showLoading(`載入中… ${pageId}`);
-
-      try {
-        current = pageId;
-        pageTitle.textContent = `載入中… ${pageId}`;
-        stopAllSfx(); sfxPlayedOnce.clear();
-        fxLayer.innerHTML = '';
-        hotspotLayer.innerHTML = '';
-        pageImg.classList.remove('ready');
-        document.body.classList.add('fx-hidden');
-
-        const res = await fetch(`assets/config/${pageId}.json`);
-        cfg = await res.json();
-
-        // 設圖與尺寸
-        pageImg.src = cfg.page.image;
-        pageImg.alt = pageId;
-        PAGE_W = cfg.page.width || 0;
-        PAGE_H = cfg.page.height || 0;
-        if (PAGE_W && PAGE_H) {
-          svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-        }
-
-        // ★ 永遠等底圖解碼完成（避免 loading 太早關）
-        if (pageImg.decode) {
-          try { await pageImg.decode(); } catch (e) { /* 某些舊瀏覽器可能丟錯，忽略即可 */ }
-        } else if (!pageImg.complete || !pageImg.naturalWidth) {
-          await new Promise(r => pageImg.addEventListener('load', r, { once: true }));
-        }
-
-
-        // 圖片尺寸＆淡入控制
-        if (!PAGE_W || !PAGE_H) {
-          // 需要從圖片本身取得尺寸
-          if (pageImg.complete && pageImg.naturalWidth) {
-            PAGE_W = pageImg.naturalWidth;
-            PAGE_H = pageImg.naturalHeight;
-            svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-            // 底圖就緒 → 顯示
-            // pageImg.classList.add('ready');
-            //document.body.classList.remove('fx-hidden');
-          } else {
-            // 等圖片載完再顯示
-            await new Promise(r => pageImg.addEventListener('load', () => {
-              PAGE_W = pageImg.naturalWidth;
-              PAGE_H = pageImg.naturalHeight;
-              svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-              //pageImg.classList.add('ready');
-              //document.body.classList.remove('fx-hidden');
-              r();
-            }, { once: true }));
-          }
-        } else {
-          // 已有寬高，但圖片可能還在載：保險作法
-          if (pageImg.complete && pageImg.naturalWidth) {
-            //pageImg.classList.add('ready');
-            //document.body.classList.remove('fx-hidden');
-          } else {
-            pageImg.addEventListener('load', () => {
-              //pageImg.classList.add('ready');
-              //document.body.classList.remove('fx-hidden');
-            }, { once: true });
-          }
-        }
-
-        await preloadCriticalAssets(cfg);
-        // 後續流程維持不變
-        pageTitle.textContent = `${pageId.toUpperCase()} · ${cfg.hotspots?.length || 0} 個互動格`;
-        renderHotspots();
-        goto(pageId);
-
-        if (cfg.page.requireAudioUnlock) showAudioHint();
-        else if (audioUnlocked) unlockAudioAndPlayBgm();
-        else {
-          const onceUnlock = () => {
-            window.removeEventListener('pointerdown', onceUnlock, { capture: true });
-            unlockAudioAndPlayBgm();
-          };
-          window.addEventListener('pointerdown', onceUnlock, { capture: true, once: true });
-        }
-
-        verifyResourcesForPage(cfg);
-
-        // 背景預載前後一頁
-        prefetchNeighbors(pageId);
-        // ★ 把會「一點就用到」的素材第一幀先解碼好，確保一開始點就不卡
-
-        pageImg.classList.add('ready');
-        document.body.classList.remove('fx-hidden');
-
-      } finally {
-        hideLoading();   // ← 不管成功或錯誤都會關掉遮罩
-      }
-    }
-
-
-    function renderHotspots() {
-      hotspotLayer.innerHTML = '';
-      (cfg.hotspots || []).forEach(h => {
-        const clickable = (h.clickable !== false) && h.action && h.action.type !== 'none';
-        const showHint = (h.hint !== false);
-        if (!clickable && !showHint) return;
-
-        const g = elNS('g'); g.setAttribute('class', 'hs'); g.dataset.id = h.id || '';
-        if (!clickable) g.style.pointerEvents = 'none';
-        if (showHint) {
-          const r = elNS('rect'); r.setAttribute('x', h.x); r.setAttribute('y', h.y);
-          r.setAttribute('width', h.width); r.setAttribute('height', h.height); r.setAttribute('rx', 8);
-          g.appendChild(r);
-        }
-        hotspotLayer.appendChild(g);
-      });
-    }
-
-    /* -------- 事件分派（點擊立刻收黃框） -------- */
-    svg.addEventListener('click', async (ev) => {
-      const node = ev.target.closest('.hs'); if (!node) return;
-      ev.preventDefault();
-      const id = node.dataset.id;
-      const h = (cfg.hotspots || []).find(x => x.id === id);
-      if (!h || !h.action) return;
-
-      node.classList.add('done'); node.style.pointerEvents = 'none';
-      await runAction(h, withDefaults(h.action));
-    });
-
-    /* 預設值 */
-    const DEFAULTS = {
-      swapFrames: { pattern: [0], durations: [600], loop: false, persist: false, dedupe: false, blockWhilePlaying: true },
-      sfx: { volume: 1.0 },
-      series: { steps: [] }
-    };
-    function withDefaults(a) { const t = a?.type; return (t && DEFAULTS[t]) ? ({ ...DEFAULTS[t], ...a }) : a; }
-
-    /* 音效 */
-    function playSfx(src, volume = 1.0) {
-      if (!audioUnlocked) return;
-      let a = sfxPool.get(src); if (!a) { a = new Audio(src); sfxPool.set(src, a); }
-      a.volume = Math.max(0, Math.min(1, volume ?? 1));
-      a.onerror = () => console.warn('[SFX 404/ERR]', src);
-      a.currentTime = 0; a.play().catch(() => { });
-
-      if (DEBUG_SFX_TOAST) {
-        const t = document.createElement('div'); t.textContent = 'SFX ▶ ' + src;
-        Object.assign(t.style, { position: 'fixed', right: '12px', top: '12px', background: 'rgba(0,0,0,.6)', color: '#fff', padding: '6px 10px', borderRadius: '8px', fontSize: '12px', zIndex: 9999 });
-        document.body.appendChild(t); setTimeout(() => t.remove(), 2000);
-      }
-    }
-
-    /* === 核心：執行 action（含 once / busy 鎖 / series 前置預載） === */
-    async function runAction(h, action) {
-      if (!action || !action.type) return;
-
-      // once：開始就消耗（避免連點重入）
-      if (action.once) {
-        if (h._consumed) return;
-        h._consumed = true;
-      }
-
-      if (action.type === 'unlockAudio') {
-        await unlockAudioAndPlayBgm();
-      }
-      else if (action.type === 'sfx') {
-        if (action.cooldownMs) {
-          const now = performance.now(); if (h._nextAt && now < h._nextAt) return; h._nextAt = now + action.cooldownMs;
-        }
-        const key = action.sfxKey || action.src;
-        if (action.sfxOnce && key && sfxPlayedOnce.has(key)) return;
-        playSfx(action.src, action.volume ?? 1.0);
-        if (action.sfxOnce && key) sfxPlayedOnce.add(key);
-      }
-      else if (action.type === 'bgm') {
-        const fade = (action.crossfadeMs != null) ? (action.crossfadeMs | 0) : 800;
-        const vol = (action.volume != null) ? clamp01(action.volume) : 0.6;
-        const loop = (action.loop != null) ? !!action.loop : true;
-
-        if (action.stop === true || action.src === 'none' || action.src === 'stop' || action.src == null) {
-          if (bgm) { try { bgm.pause(); } catch (e) { } bgm = null; }
-        } else if (action.src) {
-          const want = new URL(action.src, location.href).href;
-          if (bgm && bgm.src === want) {
-            // 同曲目：只做音量漸變，不換軌（避免卡頓/相位干涉）
-            bgm.loop = loop;
-            tweenBgmVolume(bgm, vol, fade);
-          } else {
-            // 換曲目：crossfade 真正換軌
-            await crossfadeTo(action.src, fade, vol);
-            if (bgm) { bgm.loop = loop; bgm.volume = vol; }
-          }
-        }
-      }
-
-      else if (action.type === 'swapFrames') {
-        await runSwapFramesSmall(h, action);
-      }
-      else if (action.type === 'delay') {
-        const ms = Math.max(0, action.ms | 0); await new Promise(r => setTimeout(r, ms));
-      }
-      else if (action.type === 'series' || action.type === 'actions') {
-        const steps = action.steps || action.items || [];
-        // ★ 先預載本序列會用到的切片與音效 → 避免早期步驟卡載入、後面步驟先顯示（pg10 的 p06/p07 > p05 問題）
-        await preloadSeriesSteps(steps);
-
-        for (const step of steps) {
-          if (step?.run) {
-            const target = (cfg.hotspots || []).find(x => x.id === step.run);
-            if (target && target.action) {
-              const node = [...hotspotLayer.querySelectorAll('.hs')].find(g => g.dataset.id === target.id);
-              if (node) { node.classList.add('done'); node.style.pointerEvents = 'none'; }
-              await runAction(target, withDefaults(step.action || target.action));
-            }
-          } else if (step?.type) {
-            await runAction(h, withDefaults(step));
-          }
-        }
-      }
-    }
-
-    /* 預載整個 series 用到的資源（含 nested series/actions） */
-    async function preloadSeriesSteps(steps) {
-      const urls = new Set();
-      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
-
-      function addFromAction(a) {
-        if (!a) return;
-        if (a.type === 'swapFrames') {
-          (a.frames || []).forEach(u => urls.add(u));
-          const s = a.sfx;
-          if (typeof s === 'string') urls.add(s);
-          else if (s?.src) urls.add(s.src);
-          const pre = a.preSfx;
-          if (typeof pre === 'string') urls.add(pre);
-          else if (pre?.src) urls.add(pre.src);
-        } else if (a.type === 'series' || a.type === 'actions') {
-          (a.steps || a.items || []).forEach(addFromStep);
-        }
-      }
-      function addFromStep(step) {
-        if (step?.run) {
-          const t = byId[step.run];
-          addFromAction(step.action || t?.action);
-        } else if (step?.type) {
-          addFromAction(step);
-        }
-      }
-      steps.forEach(addFromStep);
-
-      await Promise.all([...urls].map(url => preloadImage(url)));
-    }
-
-    /* -------- swapFrames：支援 slide-in / crossfade / preSfx / shake -------- */
-    function runSwapFramesSmall(h, a) {
-      const action = a || h.action || {};
-      const frames = action.frames || [];
-      if (!frames.length) return Promise.resolve();
-
-      const pattern = (Array.isArray(action.pattern) && action.pattern.length) ? action.pattern : frames.map((_, i) => i);
-      const baseInt = (typeof action.interval === 'number' && action.interval > 0) ? action.interval : 90;
-      const durations = (Array.isArray(action.durations) && action.durations.length === pattern.length) ? action.durations.slice() : pattern.map(() => baseInt);
-      let loopsLeft = (action.loop === true) ? Infinity : (typeof action.loop === 'number' && action.loop > 0) ? (action.loop | 0) : 1;
-
-      const sfxCfg = action.sfx;
-      const sfxOnFrame = (typeof action.sfxOnFrame === 'number') ? action.sfxOnFrame : null;
-      const sfxOnStep = (typeof action.sfxOnStep === 'number') ? action.sfxOnStep : null;
-      const sfxRepeat = !!action.sfxRepeat;
-      const sfxOnceFlg = !!action.sfxOnce;
-      const sfxKey = action.sfxKey || (typeof sfxCfg === 'string' ? sfxCfg : (sfxCfg?.src || null));
-      let sfxPlayed = false;
-
-      const blend = action.blend || 'cut';
-      const fadeMs = Math.max(0, action.fadeMs | 0);
-      const jitter = Math.max(0, action.jitterMs | 0);
-      const startDelay = Math.max(0, action.startDelay | 0);
-      const preSfx = action.preSfx || null;
-
-      function runShake(im, baseX, baseY, a) {
-        const ampX = Math.max(0, a.shakeX | 0);
-        const ampY = Math.max(0, a.shakeY | 0);
-        const ms = Math.max(0, a.shakeMs != null ? a.shakeMs | 0 : 400);
-        const hz = Math.max(1, a.shakeHz != null ? a.shakeHz | 0 : 20);
-        const decay = (a.decay != null) ? a.decay : 1.0;
-        if (!ampX && !ampY) return;
-        const t0 = performance.now();
-        (function raf(t) {
-          const dt = t - t0;
-          const p = Math.min(1, dt / ms);
-          const d = Math.pow(decay, p * 10);
-          const phase = 2 * Math.PI * hz * (dt / 1000);
-          const dx = ampX ? Math.sin(phase) * ampX * d : 0;
-          const dy = ampY ? Math.cos(phase) * ampY * d : 0;
-          im.setAttribute('x', baseX + dx);
-          im.setAttribute('y', baseY + dy);
-          if (p < 1) requestAnimationFrame(raf);
-          else { im.setAttribute('x', baseX); im.setAttribute('y', baseY); }
-        })(t0);
-      }
-
-      // slide-in：slideFromY 或 slideFrom:{x?,y?,relative?}
-      const slideMs = Math.max(0, action.slideMs != null ? action.slideMs | 0 : 600);
-      const slideE = (action.slideEasing || 'easeOutCubic');
-      let slideFromSpec = null;
-      if (typeof action.slideFromY === 'number') slideFromSpec = { y: action.slideFromY, relative: false };
-      else if (action.slideFrom && typeof action.slideFrom === 'object') {
-        slideFromSpec = {
-          x: (typeof action.slideFrom.x === 'number') ? action.slideFrom.x : null,
-          y: (typeof action.slideFrom.y === 'number') ? action.slideFrom.y : null,
-          relative: !!action.slideFrom.relative
-        };
-      }
-
-      const persist = !!action.persist || !!action.holdLast || !!action.keep;
-      const dedupe = !!action.dedupe;
-      if (action.blockWhilePlaying && h._busyPromise) return h._busyPromise;
-
-      const imgs = frames.map(src => {
-        const im = elNS('image');
-        im.setAttributeNS('http://www.w3.org/1999/xlink', 'href', src);
-        im.setAttribute('x', h.x); im.setAttribute('y', h.y);
-        im.setAttribute('width', h.width); im.setAttribute('height', h.height);
-        im.style.display = 'none'; im.style.opacity = '1'; im.style.pointerEvents = 'none';
-        fxLayer.appendChild(im);
-        return im;
-      });
-
-      const Easings = { linear: t => t, easeOutCubic: t => 1 - Math.pow(1 - t, 3) };
-      const ease = Easings[slideE] || Easings.easeOutCubic;
-      const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n | 0));
-      let cur = -1, fadeReq = 0;
-
-      function show(idx) {
-        const to = imgs[idx];
-        if (cur < 0) {
-          if (slideFromSpec) {
-            const startX = (slideFromSpec.x != null) ? (slideFromSpec.relative ? h.x + slideFromSpec.x : slideFromSpec.x) : h.x;
-            const startY = (slideFromSpec.y != null) ? (slideFromSpec.relative ? h.y + slideFromSpec.y : slideFromSpec.y) : h.y;
-            to.style.display = 'block'; to.style.opacity = '1';
-            to.setAttribute('x', startX); to.setAttribute('y', startY);
-            runShake(to, h.x, h.y, action);
-            const t0 = performance.now();
-            (function raf(t) {
-              const p = Math.min(1, (t - t0) / Math.max(1, slideMs));
-              const k = ease(p);
-              const nx = startX + (h.x - startX) * k;
-              const ny = startY + (h.y - startY) * k;
-              to.setAttribute('x', nx); to.setAttribute('y', ny);
-              if (p < 1) requestAnimationFrame(raf);
-              else { to.setAttribute('x', h.x); to.setAttribute('y', h.y); cur = idx; }
-            })(performance.now());
-            return;
-          }
-          if (blend === 'crossfade' && fadeMs > 0) {
-            to.style.display = 'block'; to.style.opacity = '0'; runShake(to, h.x, h.y, action);
-            const t0 = performance.now();
-            (function raf(t) {
-              const p = Math.min(1, (t - t0) / Math.max(1, fadeMs));
-              to.style.opacity = String(p);
-              if (p < 1) requestAnimationFrame(raf);
-              else { to.style.opacity = '1'; cur = idx; }
-            })(t0);
-            return;
-          }
-          imgs.forEach((im, i) => { im.style.display = (i === idx ? 'block' : 'none'); im.style.opacity = '1'; });
-          runShake(to, h.x, h.y, action); cur = idx; return;
-        }
-        if (blend !== 'crossfade' || fadeMs <= 0) {
-          imgs.forEach((im, i) => { im.style.display = (i === idx ? 'block' : 'none'); im.style.opacity = '1'; });
-          cur = idx; return;
-        }
-        const from = imgs[cur];
-        to.style.display = 'block'; to.style.opacity = '0';
-        const t0 = performance.now();
-        cancelAnimationFrame(fadeReq);
-        (function raf(t) {
-          const p = Math.min(1, (t - t0) / Math.max(1, fadeMs));
-          from.style.opacity = String(1 - p);
-          to.style.opacity = String(p);
-          if (p < 1) fadeReq = requestAnimationFrame(raf);
-          else { from.style.display = 'none'; from.style.opacity = '1'; to.style.opacity = '1'; cur = idx; }
-        })(t0);
-      }
-
-      function finish() {
-        if (!persist) setTimeout(() => imgs.forEach(im => im.remove()), 60);
-        else if (dedupe) imgs.forEach(im => { if (im.style.display !== 'block') im.remove(); });
-      }
-
-      const firstSrc = frames[(Array.isArray(pattern) && pattern.length) ? pattern[0] : 0];
-      const preloadFirst = preloadImage(firstSrc);
-      const runner = new Promise(resolve => {
-        let step = 0;
-        function tick() {
-          const frameIndex = clamp(pattern[step], 0, frames.length - 1);
-          show(frameIndex);
-
-          const hitByStep = (sfxOnStep != null && sfxOnStep === step);
-          const hitByFrame = (sfxOnFrame != null && sfxOnFrame === frameIndex);
-          if (sfxCfg && (hitByStep || hitByFrame) && (sfxRepeat || !sfxPlayed)) {
-            const src = (typeof sfxCfg === 'string') ? sfxCfg : sfxCfg.src;
-            const vol = (typeof sfxCfg === 'object' && sfxCfg.volume != null) ? sfxCfg.volume : 1.0;
-            if (src) {
-              if (!(sfxOnceFlg && sfxKey && sfxPlayedOnce.has(sfxKey))) {
-                playSfx(src, vol);
-                if (sfxOnceFlg && sfxKey) sfxPlayedOnce.add(sfxKey);
-              }
-            }
-            sfxPlayed = true;
-          }
-
-          let hold = durations[step] ?? baseInt;
-          if (jitter) hold = Math.max(16, hold + (Math.random() * jitter - jitter / 2));
-          const nextIdx = (step + 1 < pattern.length) ? clamp(pattern[step + 1], 0, frames.length - 1) : null;
-          if (nextIdx != null) preloadImage(frames[nextIdx]);
-          step++;
-          if (step < pattern.length) setTimeout(tick, hold);
-          else if (loopsLeft === Infinity || --loopsLeft > 0) { step = 0; setTimeout(tick, hold); }
-          else { finish(); resolve(); }
-        }
-
-        const start = () => {
-          if (preSfx) {
-            const src = (typeof preSfx === 'string') ? preSfx : preSfx.src;
-            const vol = (typeof preSfx === 'object' && preSfx.volume != null) ? preSfx.volume : 1.0;
-            if (src) playSfx(src, vol);
-          }
-          if (startDelay > 0) setTimeout(tick, startDelay); else tick();
-        };
-        preloadFirst.then(start);
-      });
-
-      if (action.blockWhilePlaying) {
-        h._busyPromise = runner.finally(() => { h._busyPromise = null; });
-        return h._busyPromise;
-      }
-      return runner;
-    }
-
-    /* 驗證頁面資源（快速抓 404） */
-    async function verifyResourcesForPage(cfg) {
-      const urls = new Set();
-      if (cfg?.page?.image) urls.add(cfg.page.image);
-      const byId = Object.fromEntries((cfg.hotspots || []).map(h => [h.id, h]));
-      function scan(a) {
-        if (!a) return;
-        if (a.type === 'swapFrames') {
-          (a.frames || []).forEach(u => urls.add(u));
-          if (a.sfx?.src) urls.add(a.sfx.src);
-          if (a.preSfx) urls.add(typeof a.preSfx === 'string' ? a.preSfx : a.preSfx.src);
-        } else if (a.type === 'sfx') { if (a.src) urls.add(a.src); }
-        else if (a.type === 'series' || a.type === 'actions') {
-          const steps = a.steps || a.items || [];
-          steps.forEach(s => {
-            if (s.run && byId[s.run]?.action) scan(byId[s.run].action);
-            if (s.type) scan(s);
+      else if (stepData.type === 'interaction') {
+        if (stepData.hotspots) {
+          stepData.hotspots.forEach(hs => {
+            // 支援分支選擇：優先用熱點的 nextStep
+            createHotspot(hs, hs.nextStep || stepData.nextStep);
           });
         }
       }
-      (cfg.hotspots || []).forEach(h => scan(h.action));
-      await Promise.all([...urls].map(async u => {
-        try { const r = await fetch(u, { method: 'HEAD' }); if (!r.ok) throw new Error(); }
-        catch (e) { console.warn('[Verify] missing:', u); }
-      }));
     }
 
-    function elNS(name, ns = 'http://www.w3.org/2000/svg') { return document.createElementNS(ns, name); }
+    // === 建立熱點 ===
+    // === 建立熱點 (修改後：支援跳轉頁面) ===
+    function createHotspot(hsData, nextStepId) {
+      const layer = document.getElementById('hotspotLayer');
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("class", "hs interactive");
 
-    /* 啟動 */
-    window.addEventListener('DOMContentLoaded', () => loadPage(current));
+      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", hsData.x);
+      rect.setAttribute("y", hsData.y);
+      rect.setAttribute("width", hsData.width);
+      rect.setAttribute("height", hsData.height);
+
+      // ★ 修改重點：判斷是否為跳轉指令 ★
+      g.onclick = () => {
+        // 如果 nextStepId 是字串且以 'goto:' 開頭 (例如 'goto:pg10b')
+        if (typeof nextStepId === 'string' && nextStepId.startsWith('goto:')) {
+            const targetPage = nextStepId.split(':')[1];
+            // 跳轉網址
+            window.location.href = `reader.html?page=${targetPage}`;
+        } else {
+            // 否則維持原本的步驟切換
+            renderStep(nextStepId);
+        }
+      };
+
+      g.appendChild(rect);
+      layer.appendChild(g);
+    }
+
+    // === 執行動作 (支援動畫與特效) ===
+    // === 執行動作 (升級版 v4：支援動畫不循環) ===
+    function executeAction(action) {
+      if (action.type === 'image_swap') {
+        const img = document.getElementById('pageImg');
+        img.src = action.src;
+        if (action.cssClass) {
+          img.className = ''; 
+          void img.offsetWidth; 
+          img.className = action.cssClass; 
+        }
+      } 
+      else if (action.type === 'sfx') {
+        const audio = new Audio(action.src);
+        audio.play().catch(e => console.log('音效播放失敗:', e));
+      }
+      else if (action.type === 'image_overlay') {
+        createOverlayImage(action.src, action);
+      }
+      // ★ 修改重點：動畫控制 ★
+      else if (action.type === 'animation') {
+        // 顯示第一張圖
+        const img = createOverlayImage(action.frames[0], action);
+        let frameIndex = 0;
+        
+        const intervalId = setInterval(() => {
+          let nextIndex = frameIndex + 1;
+
+          // 檢查是否播完
+          if (nextIndex >= action.frames.length) {
+            // 如果設定為「不循環 (loop: false)」，就停止計時器
+            if (action.loop === false) {
+              clearInterval(intervalId);
+              console.log("動畫播放完畢，停在最後一張");
+              return; // 停在最後一張，不再更新
+            }
+            // 否則回到第一張
+            nextIndex = 0;
+          }
+          
+          frameIndex = nextIndex;
+          img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', action.frames[frameIndex]);
+        }, action.interval || 100);
+
+        activeIntervals.push(intervalId);
+      }
+        // ★ 新增：支援切換背景音樂 (Switch BGM) ★
+      else if (action.type === 'change_bgm') {
+        // 1. 如果原本有在播音樂，先停掉
+        if (bgmAudio) {
+          bgmAudio.pause();
+          bgmAudio.currentTime = 0; // 重置時間
+        }
+
+        // 2. 播放新的音樂 (如果不為 none)
+        if (action.src && action.src !== 'none') {
+           setupBGM(action.src);
+        } else {
+           bgmAudio = null; // 如果設為 none，就變靜音
+        }
+      }
+      else if (action.type === 'fade_out_bgm') {
+        if (bgmAudio) {
+          const duration = action.duration || 1000; // 預設 1秒
+          const originalVolume = bgmAudio.volume;
+          const stepTime = 50; // 每 50ms 調整一次
+          const steps = duration / stepTime;
+          const volStep = originalVolume / steps;
+
+          const fadeInterval = setInterval(() => {
+            // 防止因為浮點數計算導致音量變成負數
+            if (bgmAudio.volume > volStep) {
+              bgmAudio.volume -= volStep;
+            } else {
+              // 音量歸零後，停止播放並清除
+              bgmAudio.volume = 0;
+              bgmAudio.pause();
+              clearInterval(fadeInterval);
+            }
+          }, stepTime);
+        }
+      }
+      }
+    
+
+    // 輔助函數
+    function createOverlayImage(src, config) {
+      const fxLayer = document.getElementById('fxLayer');
+      const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+      img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', src);
+      img.setAttribute("x", config.x);
+      img.setAttribute("y", config.y);
+      if (config.width) img.setAttribute("width", config.width);
+      if (config.height) img.setAttribute("height", config.height);
+      if (config.cssClass) img.setAttribute("class", config.cssClass);
+      fxLayer.appendChild(img);
+      return img;
+    }
+
+    // 啟動程式
+    init();
+
+    // === 設定上一頁/下一頁按鈕 (支援 A/B 雙路線) ===
+    function setupNavigation(currentId) {
+      // 1. 定義 A 路線順序 (好結局)
+      const routeA = [
+        'cover',
+        'pg01', 'pg02', 'pg03', 'pg04', 'pg05',
+        'pg06', 'pg07', 'pg08', 'pg09', 'pg10',
+        'pg11', 'pg12', 'pg13', 'pg14', 'pg15',
+        'pg16', 'pg17', 'pg18', 'pg19'
+      ];
+
+      // 2. 定義 B 路線順序 (壞結局)
+      // 注意：這裡必須包含所有 B 路線會經過的頁面
+      const routeB = [
+        'pg10B', 
+        'pg11B', 
+        'pg12B', 
+        'pg13B', 
+        'pg14B', 
+        'pg15B', 
+        'pg16B'
+      ];
+
+      // 3. 判斷當前頁面屬於哪條路線
+      let pageOrder = routeA; // 預設走 A 路線
+
+      // 如果當前頁面 ID 存在於 B 路線清單中，就切換成 B 路線
+      if (routeB.includes(currentId)) {
+        pageOrder = routeB;
+      }
+      
+      const currentIndex = pageOrder.indexOf(currentId);
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+
+      // --- 設定上一頁按鈕 ---
+      if (currentIndex > 0) {
+        // 有上一頁
+        const prevPage = pageOrder[currentIndex - 1];
+        btnPrev.href = `reader.html?page=${prevPage}`;
+        btnPrev.style.opacity = 1;
+        btnPrev.style.pointerEvents = 'auto';
+      } else {
+        // 第一頁 (或者是 pg10B 的情況)
+        // 如果是 pg10B (B路線的第一頁)，上一頁其實應該回 pg10 (抉擇點)
+        if (currentId === 'pg10B') {
+             btnPrev.href = `reader.html?page=pg10`;
+             btnPrev.style.opacity = 1;
+             btnPrev.style.pointerEvents = 'auto';
+        } else {
+             // 真的沒有上一頁了 (Cover)
+             btnPrev.style.opacity = 0.3;
+             btnPrev.style.pointerEvents = 'none';
+        }
+      }
+
+      // --- 設定下一頁按鈕 ---
+      if (currentIndex >= 0 && currentIndex < pageOrder.length - 1) {
+        const nextPage = pageOrder[currentIndex + 1];
+        btnNext.href = `reader.html?page=${nextPage}`;
+        btnNext.style.opacity = 1;
+        btnNext.style.pointerEvents = 'auto';
+      } else {
+        // 最後一頁
+        btnNext.style.opacity = 0.3;
+        btnNext.style.pointerEvents = 'none';
+      }
+    }
+
   </script>
-
-  <!-- Loading 覆蓋層 -->
-  <div id="loading" class="loading" aria-live="polite" aria-busy="true">
-    <div class="loading-box">
-      <div class="spinner" aria-hidden="true"></div>
-      <div class="tip">載入中…</div>
-    </div>
-  </div>
-
 </body>
 
 </html>

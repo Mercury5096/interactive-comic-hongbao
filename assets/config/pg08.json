@@ -1,136 +1,150 @@
 {
-    "page": {
-        "image": "assets/images/pg08.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "assets/audio/bgm_main.mp3",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 08 頁",
+    "image": "assets/images/pg08.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Wait p01: 等待點擊對白 1",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [ { "x": 32, "y": 32, "width": 410, "height": 130 } ]
     },
-    "hotspots": [
+    {
+      "stepId": 2,
+      "comment": "Act p01: 顯示對白 1",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 3,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Wait p02: 保留 p01, 等待點擊對白 2",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 }
+      ],
+      "hotspots": [ { "x": 411, "y": 249, "width": 257, "height": 171 } ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Act p02: 顯示對白 2",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 5,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Wait p03: 保留 1-2, 等待點擊 p03 (圖片覆蓋)",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 }
+      ],
+      "hotspots": [ { "x": 17, "y": 641, "width": 561, "height": 645 } ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Act p03: 顯示 p03",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-03.webp", "x": 17, "y": 641, "width": 561, "height": 645, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Wait p04: 保留 1-3, 等待點擊 p04 (電視閃爍)",
+      "type": "interaction",
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-03.webp", "x": 17, "y": 641, "width": 561, "height": 645 }
+      ],
+      "hotspots": [ { "x": 810, "y": 1304, "width": 412, "height": 431 } ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Act p04: 電視閃爍 4秒 (配合音效)",
+      "type": "auto",
+      "duration": 4000,
+      "nextStep": 9,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/tv-glitch.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-03.webp", "x": 17, "y": 641, "width": 561, "height": 645 },
         {
-            "id": "p01",
-            "x": 32,
-            "y": 32,
-            "width": 410,
-            "height": 130,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg08/pg08-01.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p02",
-            "x": 411,
-            "y": 249,
-            "width": 257,
-            "height": 171,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg08/pg08-02.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p03",
-            "x": 17,
-            "y": 641,
-            "width": 561,
-            "height": 645,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg08/pg08-03.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p04",
-            "x": 810,
-            "y": 1304,
-            "width": 412,
-            "height": 431,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg08/pg08-04A.webp",
-                    "assets/images/effects/pg08/pg08-04B.webp"
-                ],
-                "pattern": [
-                    0,
-                    1,
-                    0,
-                    1,
-                    0
-                
-                ],
-                "interval": 500,
-                "loop": 2,
-                "persist": true,
-                "dedupe": true,
-                "blend": "crossfade",
-                "fadeMs": 400,
-                "jitterMs": 20,
-                "preSfx": {
-                    "src": "assets/audio/tv-glitch.mp3",
-                    "volume": 1.0
-                }
-            }
-        },
-        {
-            "id": "p05",
-            "x": 21,
-            "y": 1333,
-            "width": 308,
-            "height": 195,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg08/pg08-05.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false,
-                "preSfx": {
-                    "src": "assets/audio/high-heels.mp3",
-                    "volume": 1.0
-                }
-            }
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg08/pg08-04A.webp",
+            "assets/images/effects/pg08/pg08-04B.webp",
+            "assets/images/effects/pg08/pg08-04A.webp",
+            "assets/images/effects/pg08/pg08-04B.webp"
+          ],
+          "interval": 250,
+          "x": 810, "y": 1304, "width": 412, "height": 431,
+          "//": "★ 新增這行：套用 CSS 柔化效果",
+          "cssClass": "fx-crossfade"
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Wait p05: 保留 1-3 (電視已停止閃爍), 等待點擊 p05",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-03.webp", "x": 17, "y": 641, "width": 561, "height": 645 }
+      ],
+      "hotspots": [ { "x": 21, "y": 1333, "width": 308, "height": 195 } ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Act p05: 顯示對白 5 + 音效 (High Heels)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 11,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/high-heels.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-03.webp", "x": 17, "y": 641, "width": 561, "height": 645 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-05.webp", "x": 21, "y": 1333, "width": 308, "height": 195, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 11,
+      "comment": "End: 結束狀態",
+      "type": "interaction",
+      "nextStep": 11,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-01.webp", "x": 32, "y": 32, "width": 410, "height": 130 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-02.webp", "x": 411, "y": 249, "width": 257, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-03.webp", "x": 17, "y": 641, "width": 561, "height": 645 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg08/pg08-05.webp", "x": 21, "y": 1333, "width": 308, "height": 195 }
+      ],
+      "hotspots": []
+    }
+  ]
 }

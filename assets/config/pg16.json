@@ -1,287 +1,182 @@
 {
-    "page": {
-        "image": "assets/images/pg16.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 16 頁",
+    "image": "assets/images/pg16.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Wait p01: 等待點擊 p01 (怪物爆炸)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [ { "x": 3, "y": 0, "width": 1238, "height": 823 } ]
     },
-    "hotspots": [
+    {
+      "stepId": 2,
+      "comment": "Act p01: 爆炸動畫 (2.5s) - 之後停止",
+      "type": "auto",
+      "duration": 2500,
+      "nextStep": 3,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/burning-monster.mp3" },
         {
-            "id": "p01",
-            "x": 3,
-            "y": 0,
-            "width": 1238,
-            "height": 823,
-            "action": {
-                "type": "series",
-                "once": true,
-                "blockWhilePlaying": true,
-                "steps": [
-                    {
-                        "type": "sfx",
-                        "src": "assets/audio/burning-monster.mp3",
-                        "volume": 1.0,
-                        "sfxOnce": true,
-                        "sfxKey": "fire-burn"
-                    },
-                    {
-                        "type": "swapFrames",
-                        "frames": [
-                            "assets/images/effects/pg16/pg16-01A.webp",
-                            "assets/images/effects/pg16/pg16-01B.webp"
-                        ],
-                        "pattern": [
-                            0,
-                            1,
-                            0,
-                            1
-                        ],
-                        "durations": [
-                            400,400,400,400
-                        ],
-                        "persist": true,
-                        "dedupe": true,
-                        "loop": 3,
-                        "blend": "crossfade",
-                        "fadeMs": 160,
-                        "jitterMs": 30
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p02"
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p03"
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p04"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "p02",
-            "x": 806,
-            "y": 414,
-            "width": 350,
-            "height": 261,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg16/pg16-02.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    200
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p03",
-            "x": 166,
-            "y": 188,
-            "width": 380,
-            "height": 288,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg16/pg16-03.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                   200
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p04",
-            "x": 20,
-            "y": 463,
-            "width": 276,
-            "height": 237,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg16/pg16-04.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    200
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p05",
-            "x": 0,
-            "y": 807,
-            "width": 1241,
-            "height": 947,
-            "action": {
-                "type": "series",
-                "once": true,
-                "blockWhilePlaying": true,
-                "steps": [
-                    {
-                        "type": "sfx",
-                        "src": "assets/audio/explore-monster.mp3",
-                        "volume": 1.0,
-                        "sfxOnce": true
-                    },
-                    {
-                        "type": "swapFrames",
-                        "frames": [
-                            "assets/images/effects/pg16/pg16-05A.webp",
-                            "assets/images/effects/pg16/pg16-05B.webp",
-                            "assets/images/effects/pg16/pg16-05C.webp",
-                            "assets/images/effects/pg16/pg16-05D.webp"
-                        ],
-                        "pattern": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            2,
-                            1,
-                            0
-                        ],
-                        "durations": [
-                            200,200,200,200,200,200,200
-                        ],
-                        "persist": true,
-                        "dedupe": true,
-                        "loop": 4,
-                        "blend": "crossfade",
-                        "fadeMs": 100,
-                        "jitterMs": 50
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p06"
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p07"
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p08"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "p06",
-            "x": 804,
-            "y": 996,
-            "width": 277,
-            "height": 499,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg16/pg16-06.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p07",
-            "x": 54,
-            "y": 836,
-            "width": 465,
-            "height": 874,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg16/pg16-07.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p08",
-            "x": 39,
-            "y": 1259,
-            "width": 420,
-            "height": 297,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg16/pg16-08.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg16/pg16-01A.webp",
+            "assets/images/effects/pg16/pg16-01B.webp",
+            "assets/images/effects/pg16/pg16-01A.webp"
+          ],
+          "interval": 400,
+          "x": 3, "y": 0, "width": 1238, "height": 823,
+          "cssClass": "fx-crossfade"
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Act p02: 顯示對白 2 (背景變靜止)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 4,
+      "actions": [
+        {
+          "//": "★ 修改點 1：這裡改放靜態圖，讓爆炸動畫停止",
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg16/pg16-01B.webp",
+          "x": 3, "y": 0, "width": 1238, "height": 823
+        },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Act p03: 顯示對白 3",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 5,
+      "actions": [
+        {
+          "//": "持續保持靜止",
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg16/pg16-01B.webp",
+          "x": 3, "y": 0, "width": 1238, "height": 823
+        },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Act p04: 顯示對白 4",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-01B.webp", "x": 3, "y": 0, "width": 1238, "height": 823 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-04.webp", "x": 20, "y": 463, "width": 276, "height": 237, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Wait p05: 保留 Group 1, 等待點擊 p05",
+      "type": "interaction",
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-01B.webp", "x": 3, "y": 0, "width": 1238, "height": 823 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-04.webp", "x": 20, "y": 463, "width": 276, "height": 237 }
+      ],
+      "hotspots": [ { "x": 0, "y": 807, "width": 1241, "height": 947 } ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Act p05: 垂死動畫 (4s) - 之後停止",
+      "type": "auto",
+      "//": "★ 設定 4秒，讓動畫跑完",
+      "duration": 4000,
+      "nextStep": 8,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/explore-monster.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-01B.webp", "x": 3, "y": 0, "width": 1238, "height": 823 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-04.webp", "x": 20, "y": 463, "width": 276, "height": 237 },
+        {
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg16/pg16-05A.webp",
+            "assets/images/effects/pg16/pg16-05B.webp",
+            "assets/images/effects/pg16/pg16-05C.webp",
+            "assets/images/effects/pg16/pg16-05D.webp",
+            "assets/images/effects/pg16/pg16-05C.webp",
+            "assets/images/effects/pg16/pg16-05B.webp"
+          ],
+          "interval": 200,
+          "x": 0, "y": 807, "width": 1241, "height": 947,
+          "cssClass": "fx-crossfade"
+        }
+      ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Act p06: 顯示字體 6 (背景變靜止)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 9,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-01B.webp", "x": 3, "y": 0, "width": 1238, "height": 823 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-04.webp", "x": 20, "y": 463, "width": 276, "height": 237 },
+        {
+          "//": "★ 修改點 2：這裡改放靜態圖 (05D)，象徵死透了",
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg16/pg16-05D.webp",
+          "x": 0, "y": 807, "width": 1241, "height": 947
+        },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-06.webp", "x": 804, "y": 996, "width": 277, "height": 499, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Act p07: 顯示字體 7",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-01B.webp", "x": 3, "y": 0, "width": 1238, "height": 823 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-04.webp", "x": 20, "y": 463, "width": 276, "height": 237 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-05D.webp", "x": 0, "y": 807, "width": 1241, "height": 947 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-06.webp", "x": 804, "y": 996, "width": 277, "height": 499 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-07.webp", "x": 54, "y": 836, "width": 465, "height": 874, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Act p08: 顯示字體 8 - 結束",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-01B.webp", "x": 3, "y": 0, "width": 1238, "height": 823 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-02.webp", "x": 806, "y": 414, "width": 350, "height": 261 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-03.webp", "x": 166, "y": 188, "width": 380, "height": 288 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-04.webp", "x": 20, "y": 463, "width": 276, "height": 237 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-05D.webp", "x": 0, "y": 807, "width": 1241, "height": 947 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-06.webp", "x": 804, "y": 996, "width": 277, "height": 499 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-07.webp", "x": 54, "y": 836, "width": 465, "height": 874 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg16/pg16-08.webp", "x": 39, "y": 1259, "width": 420, "height": 297, "cssClass": "fx-fade-in" }
+      ],
+      "hotspots": []
+    }
+  ]
 }

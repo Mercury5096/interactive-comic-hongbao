@@ -1,107 +1,205 @@
 {
-    "page": {
-        "image": "assets/images/pg03.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "assets/audio/bgm_main.mp3",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 03 頁",
+    "image": "assets/images/pg03.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Step 1: 待機 - 畫面乾淨，等待點擊對白 1",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [
+        { "x": 540, "y": 528, "width": 404, "height": 130 }
+      ]
     },
-    "hotspots": [
+    {
+      "stepId": 2,
+      "comment": "Step 2: 演出 - 對白 1 出現",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 3,
+      "actions": [
         {
-            "id": "p01",
-            "x": 540,
-            "y": 528,
-            "width": 404,
-            "height": 130,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg03/對話-01.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p02",
-            "x": 349,
-            "y": 781,
-            "width": 398,
-            "height": 184,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg03/對話-02.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p03",
-            "x": 402,
-            "y": 1362,
-            "width": 318,
-            "height": 154,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg03/對話-03.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false,
-                "sfx": {
-                    "src": "assets/audio/shock.mp3",
-                    "volume": 1.0
-                },
-                "sfxOnFrame": 0,
-                "sfxOnce": true,
-                "once": true,
-                "blockWhilePlaying": true
-            }
-        },
-        {
-            "id": "p04",
-            "x": 117,
-            "y": 1565,
-            "width": 237,
-            "height": 155,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg03/對話-04.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130,
+          "cssClass": "fx-fade-in"
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Step 3: 待機 - 保留對白 1，等待點擊對白 2",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        {
+          "//": "繼承對白 1 (無特效，因為已經出現過了)",
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        }
+      ],
+      "hotspots": [
+        { "x": 349, "y": 781, "width": 398, "height": 184 }
+      ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Step 4: 演出 - 對白 2 出現 (累積 1+2)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 5,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-02.webp",
+          "x": 349, "y": 781, "width": 398, "height": 184,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Step 5: 待機 - 保留對白 1+2，等待點擊對白 3",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-02.webp",
+          "x": 349, "y": 781, "width": 398, "height": 184
+        }
+      ],
+      "hotspots": [
+        { "x": 402, "y": 1362, "width": 318, "height": 154 }
+      ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Step 6: 演出 - 對白 3 出現 + 音效 Shock",
+      "type": "auto",
+      "duration": 800,
+      "nextStep": 7,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/shock.mp3" },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-02.webp",
+          "x": 349, "y": 781, "width": 398, "height": 184
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-03.webp",
+          "x": 402, "y": 1362, "width": 318, "height": 154,
+          "//": "這裡加上震動特效配合音效",
+          "cssClass": "fx-shake fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Step 7: 待機 - 保留對白 1+2+3，等待點擊對白 4",
+      "type": "interaction",
+      "nextStep": 8,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-02.webp",
+          "x": 349, "y": 781, "width": 398, "height": 184
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-03.webp",
+          "x": 402, "y": 1362, "width": 318, "height": 154
+        }
+      ],
+      "hotspots": [
+        { "x": 117, "y": 1565, "width": 237, "height": 155 }
+      ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Step 8: 演出 - 對白 4 出現 (全部顯示)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 9,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-02.webp",
+          "x": 349, "y": 781, "width": 398, "height": 184
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-03.webp",
+          "x": 402, "y": 1362, "width": 318, "height": 154
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-04.webp",
+          "x": 117, "y": 1565, "width": 237, "height": 155,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Step 9: 結束狀態 - 全部保留，無熱點",
+      "type": "interaction",
+      "nextStep": 9,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-01.webp",
+          "x": 540, "y": 528, "width": 404, "height": 130
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-02.webp",
+          "x": 349, "y": 781, "width": 398, "height": 184
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-03.webp",
+          "x": 402, "y": 1362, "width": 318, "height": 154
+        },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg03/對話-04.webp",
+          "x": 117, "y": 1565, "width": 237, "height": 155
+        }
+      ],
+      "hotspots": []
+    }
+  ]
 }

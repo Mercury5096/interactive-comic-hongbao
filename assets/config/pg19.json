@@ -1,242 +1,194 @@
 {
   "page": {
+    "title": "第 19 頁",
     "image": "assets/images/pg19.webp",
     "width": 1241,
     "height": 1754,
-    "bgm": "none",
-    "requireAudioUnlock": false
+    "bgm": "assets/audio/happy-whistle.mp3"
   },
-  "hotspots": [
+  "steps": [
     {
-      "id": "p01",
-      "x": 730,
-      "y": 724,
-      "width": 291,
-      "height": 88,
-      "action": {
-        "type": "swapFrames",
-        "frames": [
-          "assets/images/effects/pg19/pg19-01.webp"
-        ],
-        "pattern": [
-          0
-        ],
-        "durations": [
-          150
-        ],
-        "persist": true,
-        "dedupe": true,
-        "loop": false,
-        "slideFrom": {
-          "y": 200,
-          "relative": true
+      "stepId": 1,
+      "comment": "Wait p01: 等待點擊 p01 (對白)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [ { "x": 730, "y": 724, "width": 291, "height": 88 } ]
+    },
+    {
+      "stepId": 2,
+      "comment": "Act p01: 顯示對白 1",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 3,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Wait p02: 保留 p01, 等待點擊 p02 (開始淡出音樂)",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 }
+      ],
+      "hotspots": [ { "x": 914, "y": 1606, "width": 299, "height": 122 } ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Act p02: 顯示對白 2 + 音樂長淡出 (5秒)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 5,
+      "actions": [
+        { 
+          "//": "★ 修改點 1：將時間延長至 5000ms (5秒)，讓它能跨越到下一個步驟",
+          "type": "fade_out_bgm", 
+          "duration": 5000 
         },
-        "slideMs": 600,
-        "blend": "crossfade",
-        "fadeMs": 600
-      }
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122, "cssClass": "fx-fade-in" }
+      ]
     },
     {
-      "id": "p02",
-      "x": 914,
-      "y": 1606,
-      "width": 299,
-      "height": 122,
-      "action": {
-        "type": "swapFrames",
-        "frames": [
-          "assets/images/effects/pg19/pg19-02.webp"
-        ],
-        "pattern": [
-          0
-        ],
-        "durations": [
-          150
-        ],
-        "persist": true,
-        "dedupe": true,
-        "loop": false
-      }
+      "stepId": 5,
+      "comment": "Wait p03: 保留 1-2, 等待點擊 p03 (音樂持續淡出中)",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 }
+      ],
+      "hotspots": [ { "x": 414, "y": 35, "width": 303, "height": 153 } ]
     },
-   {
-  "id": "p03",
-  "x": 414, "y": 35, "width": 303, "height": 153,
-  "action": {
-    "type": "series",
-    "once": true,
-    "blockWhilePlaying": true,
-    "steps": [
-      { "type": "unlockAudio" },
-
-      { "type": "bgm", "src": "assets/audio/happy-whistle.mp3", "crossfadeMs": 120, "volume": 0.05, "loop": true },
-
-      { "type": "sfx",
-        "src": "assets/audio/high-heels-run.mp3",
-        "volume": 1.0,
-        "sfxOnce": true,
-        "sfxKey": "pg19-high-heels-run.mp3"
-      },
-
-      { "type": "delay", "ms": 250 },
-
-      { "type": "bgm", "src": "assets/audio/happy-whistle.mp3", "crossfadeMs": 800, "volume": 0.13, "loop": true },
-
-      { "type": "swapFrames",
-        "frames": ["assets/images/effects/pg19/pg19-03.webp"],
-        "pattern": [0],
-        "durations": [150],
-        "persist": true, "dedupe": true, "loop": false
-      }
-    ]
-  }
-},
     {
-      "id": "p04",
-      "x": 26,
-      "y": 1098,
-      "width": 297,
-      "height": 151,
-      "action": {
-        "type": "swapFrames",
-        "frames": [
-          "assets/images/effects/pg19/pg19-04.webp"
-        ],
-        "pattern": [
-          0
-        ],
-        "durations": [
-          150
-        ],
-        "persist": true,
-        "dedupe": true,
-        "loop": false,
-        "sfx": {
-          "src": "assets/audio/wind.mp3",
-          "volume": 1.0
+      "stepId": 6,
+      "comment": "Act p03: 顯示對白 3 + 腳步聲 (音樂繼續淡出，不打斷)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/high-heels-run.mp3" },
+        { 
+          "//": "★ 修改點 2：移除了 change_bgm 指令，讓淡出效果繼續執行不中斷"
         },
-        "sfxOnFrame": 0,
-        "sfxOnce": true,
-        "once": true,
-        "blockWhilePlaying": true
-      }
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153, "cssClass": "fx-fade-in" }
+      ]
     },
     {
-      "id": "p05",
-      "x": 17,
-      "y": 1268,
-      "width": 656,
-      "height": 469,
-      "action": {
-        "type": "series",
-        "once": true,
-        "blockWhilePlaying": true,
-        "steps": [
-          {
-            "type": "bgm",
-            "src": "assets/audio/cinematic-thriller.mp3",
-            "crossfadeMs": 600,
-            "volume": 0.9,
-            "loop": true
-          },
-          {
-            "type": "swapFrames",
-            "frames": [
-              "assets/images/effects/pg19/pg19-05.webp"
-            ],
-            "pattern": [
-              0
-            ],
-            "durations": [
-              150
-            ],
-            "persist": true,
-            "dedupe": true,
-            "loop": false
-          },
-          {
-            "type": "delay",
-            "ms": 600
-          },
-          {
-            "run": "p06"
-          },
-          {
-            "type": "delay",
-            "ms": 600
-          },
-          {
-            "run": "p07"
-          }
-        ]
-      }
+      "stepId": 7,
+      "comment": "Wait p04: 保留 1-3, 等待點擊 p04 (起風/音樂結束)",
+      "type": "interaction",
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153 }
+      ],
+      "hotspots": [ { "x": 26, "y": 1098, "width": 297, "height": 151 } ]
     },
     {
-      "id": "p06",
-      "x": 402,
-      "y": 1627,
-      "width": 232,
-      "height": 94,
-      "clickable": false,
-      "hint": false,
-      "action": {
-        "type": "swapFrames",
-        "frames": [
-          "assets/images/effects/pg19/pg19-06.webp"
-        ],
-        "pattern": [
-          0
-        ],
-        "durations": [
-          150
-        ],
-        "persist": true,
-        "dedupe": true,
-        "loop": false
-      }
+      "stepId": 8,
+      "comment": "Act p04: 顯示對白 4 + 風聲 (確保音樂完全停止)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 9,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/wind.mp3" },
+        { 
+          "//": "★ 修改點 3：這裡保留停止指令，萬一讀者閱讀太快，這裡會強制靜音", 
+          "type": "change_bgm", 
+          "src": "none" 
+        },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-04.webp", "x": 26, "y": 1098, "width": 297, "height": 151, "cssClass": "fx-fade-in" }
+      ]
     },
     {
-      "id": "p07",
-      "x": 31,
-      "y": 1683,
-      "width": 156,
-      "height": 42,
-      "clickable": false,
-      "hint": false,
-      "action": {
-        "type": "swapFrames",
-        "frames": [
-          "assets/images/effects/pg19/pg19-07A.webp",
-          "assets/images/effects/pg19/pg19-07B.webp",
-          "assets/images/effects/pg19/pg19-07C.webp",
-          "assets/images/effects/pg19/pg19-07D.webp",
-          "assets/images/effects/pg19/pg19-07E.webp"
-        ],
-        "pattern": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          3,
-          2,
-          1,
-          0
-        ],
-        "durations": [
-          300,
-          300,
-          300,
-          300,
-          300,
-          300,
-          300,
-          300,
-          300
-        ],
-        "persist": true,
-        "dedupe": true,
-        "loop": true
-      }
+      "stepId": 9,
+      "comment": "Wait p05: 保留 1-4, 等待點擊 p05 (連鎖開始: 結局)",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-04.webp", "x": 26, "y": 1098, "width": 297, "height": 151 }
+      ],
+      "hotspots": [ { "x": 17, "y": 1268, "width": 656, "height": 469 } ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Act p05: 紅包淡入 + 驚悚音樂",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 11,
+      "actions": [
+        { 
+          "type": "change_bgm", 
+          "src": "assets/audio/cinematic-thriller.mp3" 
+        },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-04.webp", "x": 26, "y": 1098, "width": 297, "height": 151 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg19/pg19-05.webp", 
+          "x": 17, "y": 1268, "width": 656, "height": 469, 
+          "cssClass": "fx-fade-in" 
+        }
+      ]
+    },
+    {
+      "stepId": 11,
+      "comment": "Act p06: 自動顯示對白 6",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 12,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-04.webp", "x": 26, "y": 1098, "width": 297, "height": 151 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-05.webp", "x": 17, "y": 1268, "width": 656, "height": 469 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-06.webp", "x": 402, "y": 1627, "width": 232, "height": 94, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 12,
+      "comment": "Act p07: 自動顯示小動畫 - 循環播放",
+      "type": "interaction",
+      "nextStep": 12,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-01.webp", "x": 730, "y": 724, "width": 291, "height": 88 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-02.webp", "x": 914, "y": 1606, "width": 299, "height": 122 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-03.webp", "x": 414, "y": 35, "width": 303, "height": 153 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-04.webp", "x": 26, "y": 1098, "width": 297, "height": 151 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-05.webp", "x": 17, "y": 1268, "width": 656, "height": 469 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg19/pg19-06.webp", "x": 402, "y": 1627, "width": 232, "height": 94 },
+        {
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg19/pg19-07A.webp",
+            "assets/images/effects/pg19/pg19-07B.webp",
+            "assets/images/effects/pg19/pg19-07C.webp",
+            "assets/images/effects/pg19/pg19-07D.webp",
+            "assets/images/effects/pg19/pg19-07E.webp",
+            "assets/images/effects/pg19/pg19-07D.webp",
+            "assets/images/effects/pg19/pg19-07C.webp",
+            "assets/images/effects/pg19/pg19-07B.webp"
+          ],
+          "interval": 300,
+          "x": 31, "y": 1683, "width": 156, "height": 42
+        }
+      ],
+      "hotspots": []
     }
   ]
 }

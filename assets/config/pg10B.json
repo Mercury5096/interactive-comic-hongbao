@@ -1,0 +1,178 @@
+{
+  "page": {
+    "title": "第 10 頁 - 異變 (壞結局)",
+    "image": "assets/images/pg10-BE.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/fuerteventura-loop.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Step 1: 等待點擊 P01 來啟動壞結局劇情 (確保音訊可播放)",
+      "type": "interaction",
+      "actions": [],
+      "hotspots": [
+        {
+          "x": 671, "y": 18, "width": 549, "height": 845,
+          "nextStep": 2
+        }
+      ]
+    },
+    {
+      "stepId": 2,
+      "comment": "Step 2: 顯示 P01 (壞結局版)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 3,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-01.webp",
+          "x": 671, "y": 18, "width": 549, "height": 845,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Step 3: 顯示 P02 (文字)",
+      "type": "auto",
+      "duration": 1200,
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-02.webp",
+          "x": 665, "y": 756, "width": 353, "height": 109,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Step 4: 顯示 P03 (圖片)",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 5,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-02.webp", "x": 665, "y": 756, "width": 353, "height": 109 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-03.webp",
+          "x": 610, "y": 871, "width": 613, "height": 865,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Step 5: 顯示 P04 (文字)",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-02.webp", "x": 665, "y": 756, "width": 353, "height": 109 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-03.webp", "x": 610, "y": 871, "width": 613, "height": 865 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-04.webp",
+          "x": 673, "y": 1603, "width": 350, "height": 116,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Step 6: 顯示 P05 (開門) + 音效",
+      "type": "auto",
+      "duration": 2400,
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-02.webp", "x": 665, "y": 756, "width": 353, "height": 109 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-03.webp", "x": 610, "y": 871, "width": 613, "height": 865 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-04.webp", "x": 673, "y": 1603, "width": 350, "height": 116 },
+        { "type": "sfx", "src": "assets/audio/car-door-opening5.mp3" },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-05.webp",
+          "x": 18, "y": 15, "width": 677, "height": 445,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Step 7: 顯示 P06 (開車) + 音效",
+      "type": "auto",
+      "duration": 3500,
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-02.webp", "x": 665, "y": 756, "width": 353, "height": 109 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-03.webp", "x": 610, "y": 871, "width": 613, "height": 865 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-04.webp", "x": 673, "y": 1603, "width": 350, "height": 116 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-05.webp", "x": 18, "y": 15, "width": 677, "height": 445 },
+        { "type": "sfx", "src": "assets/audio/car_startdriveaway.mp3" },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-06.webp",
+          "x": 17, "y": 473, "width": 646, "height": 473,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Step 8: 顯示 P07 (文字)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 9,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-02.webp", "x": 665, "y": 756, "width": 353, "height": 109 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-03.webp", "x": 610, "y": 871, "width": 613, "height": 865 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-04.webp", "x": 673, "y": 1603, "width": 350, "height": 116 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-05.webp", "x": 18, "y": 15, "width": 677, "height": 445 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-06.webp", "x": 17, "y": 473, "width": 646, "height": 473 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-07.webp",
+          "x": 327, "y": 430, "width": 403, "height": 199,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Step 9: 顯示 P08 (完結畫面) - 等待點擊跳轉",
+      "type": "interaction",
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-01.webp", "x": 671, "y": 18, "width": 549, "height": 845 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-02.webp", "x": 665, "y": 756, "width": 353, "height": 109 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-03.webp", "x": 610, "y": 871, "width": 613, "height": 865 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-04.webp", "x": 673, "y": 1603, "width": 350, "height": 116 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-05.webp", "x": 18, "y": 15, "width": 677, "height": 445 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-06.webp", "x": 17, "y": 473, "width": 646, "height": 473 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg10-B/pg10-07.webp", "x": 327, "y": 430, "width": 403, "height": 199 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg10-B/pg10-08.webp",
+          "x": 18, "y": 958, "width": 634, "height": 782,
+          "cssClass": "fx-fade-in"
+        }
+      ],
+      "hotspots": [
+        {
+          "//": "★ 關鍵修改：點擊最後一格 -> 跳轉到 B 路線的第 11 頁",
+          "x": 18, "y": 958, "width": 634, "height": 782,
+          "nextStep": "goto:pg11B"
+        }
+      ]
+    }
+  ]
+}

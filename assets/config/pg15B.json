@@ -1,0 +1,148 @@
+{
+  "page": {
+    "title": "第 15 頁 (B路線)",
+    "image": "assets/images/pg15-BE.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Step 1: 等待點擊 P02 (文字/反應)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [
+        { "x": 337, "y": 192, "width": 322, "height": 190 }
+      ]
+    },
+    {
+      "stepId": 2,
+      "comment": "Step 2: 顯示 P02 (文字)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 3,
+      "actions": [
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg15-B/pg15-02.webp",
+          "x": 337, "y": 192, "width": 322, "height": 190,
+          "cssClass": "fx-fade-in"
+        }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Step 3: 等待點擊 P03 (中間大圖 - 攻擊)",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 }
+      ],
+      "hotspots": [
+        { "x": 20, "y": 430, "width": 1208, "height": 637 }
+      ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Step 4: 射擊序列 Part 1 - 第一槍 (播放音效 + 震動)",
+      "type": "auto",
+      "duration": 300,
+      "nextStep": 5,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { "type": "sfx", "src": "assets/audio/revolver-calibre.mp3" },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg15-B/pg15-03.webp",
+          "x": 20, "y": 430, "width": 1208, "height": 637,
+          "cssClass": "fx-shake"
+        }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Step 5: 射擊序列 Part 2 - 間隔 (靜止 0.9秒)",
+      "type": "auto",
+      "duration": 900,
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-03.webp", "x": 20, "y": 430, "width": 1208, "height": 637 }
+      ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Step 6: 射擊序列 Part 3 - 連射 4 發 (震動 1.2秒 = 4次 shake)",
+      "type": "auto",
+      "duration": 1200,
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg15-B/pg15-03.webp",
+          "x": 20, "y": 430, "width": 1208, "height": 637,
+          "cssClass": "fx-shake"
+        }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Step 7: 射擊序列 Part 4 - 間隔 (靜止 1.1秒)",
+      "type": "auto",
+      "duration": 1100,
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-03.webp", "x": 20, "y": 430, "width": 1208, "height": 637 }
+      ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Step 8: 射擊序列 Part 5 - 最後一槍 (震動 0.5秒)",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 9,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        {
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg15-B/pg15-03.webp",
+          "x": 20, "y": 430, "width": 1208, "height": 637,
+          "cssClass": "fx-shake"
+        }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Step 9: 等待點擊 P04 (下方文字)",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-03.webp", "x": 20, "y": 430, "width": 1208, "height": 637 }
+      ],
+      "hotspots": [
+        { "x": 89, "y": 1378, "width": 525, "height": 340 }
+      ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Step 10: 顯示 P04 + 怪獸吼叫聲",
+      "type": "interaction",
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/monster-roar.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15-B/pg15-03.webp", "x": 20, "y": 430, "width": 1208, "height": 637 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg15-B/pg15-04.webp", 
+          "x": 89, "y": 1378, "width": 525, "height": 340,
+          "cssClass": "fx-fade-in"
+        }
+      ],
+      "hotspots": []
+    }
+  ]
+}

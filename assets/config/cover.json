@@ -1,0 +1,57 @@
+{
+  "page": {
+    "title": "封面",
+    "image": "assets/images/CV.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "第一步：待機狀態 (靜止)",
+      "type": "interaction",
+      "nextStep": 2, 
+      "actions": [
+        {
+          "//": "剛進來時，強制顯示第一張靜態圖 (A)",
+          "type": "image_swap",
+          "src": "assets/images/effects/cv/CV-A.webp"
+        }
+      ],
+      "hotspots": [
+         {
+            "//": "這裡有熱點，所以滑鼠移過去會有「白框」，提示使用者點擊開始",
+            "x": 0, "y": 0, "width": 1241, "height": 1754
+         }
+      ]
+    },
+    {
+      "stepId": 2,
+      "comment": "第二步：播放狀態 (點擊後進入)",
+      "type": "interaction",
+      "nextStep": 2,
+      "actions": [
+        {
+          "type": "animation",
+          "//": "進入這一步才開始播動畫，播完停在最後一張",
+          "loop": false,
+          "frames": [
+            "assets/images/effects/cv/CV-A.webp",
+            "assets/images/effects/cv/CV-B.webp",
+            "assets/images/effects/cv/CV-C.webp",
+            "assets/images/effects/cv/CV-B.webp",
+            "assets/images/effects/cv/CV-A.webp",
+            "assets/images/effects/cv/CV-B.webp",
+            "assets/images/effects/cv/CV-C.webp",
+            "assets/images/effects/cv/CV-D.webp"
+          ],
+          "interval": 600,
+          "x": 0, "y": 0, "width": 1241, "height": 1754
+        }
+      ],
+      "hotspots": [],
+      "//": "★ 關鍵：這裡沒有熱點 (Empty)，所以點擊後「白框」會消失，畫面變乾淨"
+    }
+  ]
+}

@@ -1,172 +1,191 @@
 {
-    "page": {
-        "image": "assets/images/pg18.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "assets/audio/happy-whistle.mp3",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 18 頁",
+    "image": "assets/images/pg18.webp",
+    "width": 1241,
+    "height": 1754,
+    "//": "★ BGM：切換成快樂的口哨聲",
+    "bgm": "assets/audio/happy-whistle.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Wait p01: 等待點擊 p01 (圖片滑入)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [ { "x": 870, "y": 18, "width": 350, "height": 542 } ]
     },
-    "hotspots": [
-        {
-            "id": "p01",
-            "x": 870,
-            "y": 18,
-            "width": 350,
-            "height": 542,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-01.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false,
-                "slideFrom": {
-                    "y": 200,
-                    "relative": true
-                },
-                "slideMs": 600,
-                "blend": "crossfade",
-                "fadeMs": 600
-            }
-        },
-        {
-            "id": "p02",
-            "x": 671,
-            "y": 337,
-            "width": 164,
-            "height": 135,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-02.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p03",
-            "x": 24,
-            "y": 853,
-            "width": 369,
-            "height": 186,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-03.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p04",
-            "x": 836,
-            "y": 1453,
-            "width": 302,
-            "height": 193,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-04.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p05",
-            "x": 458,
-            "y": 1083,
-            "width": 298,
-            "height": 157,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-05.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p06",
-            "x": 384,
-            "y": 1577,
-            "width": 364,
-            "height": 150,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-06.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p07",
-            "x": 50,
-            "y": 1348,
-            "width": 310,
-            "height": 201,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg18/pg18-07.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    150
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
+    {
+      "stepId": 2,
+      "comment": "Act p01: 顯示圖片 (Slide Up)",
+      "type": "auto",
+      "duration": 600,
+      "nextStep": 3,
+      "actions": [
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg18/pg18-01.webp", 
+          "x": 870, "y": 18, "width": 350, "height": 542, 
+          "//": "★ 使用滑入特效",
+          "cssClass": "fx-slide-up" 
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Wait p02: 保留 p01, 等待點擊 p02",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 }
+      ],
+      "hotspots": [ { "x": 671, "y": 337, "width": 164, "height": 135 } ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Act p02: 顯示對白 p02",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 5,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Wait p03: 保留 1-2, 等待點擊 p03",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 }
+      ],
+      "hotspots": [ { "x": 24, "y": 853, "width": 369, "height": 186 } ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Act p03: 顯示對白 p03",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Wait p04: 保留 1-3, 等待點擊 p04",
+      "type": "interaction",
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 }
+      ],
+      "hotspots": [ { "x": 836, "y": 1453, "width": 302, "height": 193 } ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Act p04: 顯示對白 p04",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 9,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Wait p05: 保留 1-4, 等待點擊 p05",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193 }
+      ],
+      "hotspots": [ { "x": 458, "y": 1083, "width": 298, "height": 157 } ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Act p05: 顯示對白 p05",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 11,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-05.webp", "x": 458, "y": 1083, "width": 298, "height": 157, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 11,
+      "comment": "Wait p06: 保留 1-5, 等待點擊 p06",
+      "type": "interaction",
+      "nextStep": 12,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-05.webp", "x": 458, "y": 1083, "width": 298, "height": 157 }
+      ],
+      "hotspots": [ { "x": 384, "y": 1577, "width": 364, "height": 150 } ]
+    },
+    {
+      "stepId": 12,
+      "comment": "Act p06: 顯示對白 p06",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 13,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-05.webp", "x": 458, "y": 1083, "width": 298, "height": 157 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-06.webp", "x": 384, "y": 1577, "width": 364, "height": 150, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 13,
+      "comment": "Wait p07: 保留 1-6, 等待點擊 p07",
+      "type": "interaction",
+      "nextStep": 14,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-05.webp", "x": 458, "y": 1083, "width": 298, "height": 157 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-06.webp", "x": 384, "y": 1577, "width": 364, "height": 150 }
+      ],
+      "hotspots": [ { "x": 50, "y": 1348, "width": 310, "height": 201 } ]
+    },
+    {
+      "stepId": 14,
+      "comment": "Act p07: 顯示對白 p07 - 結束",
+      "type": "interaction",
+      "nextStep": 14,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-01.webp", "x": 870, "y": 18, "width": 350, "height": 542 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-02.webp", "x": 671, "y": 337, "width": 164, "height": 135 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-03.webp", "x": 24, "y": 853, "width": 369, "height": 186 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-04.webp", "x": 836, "y": 1453, "width": 302, "height": 193 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-05.webp", "x": 458, "y": 1083, "width": 298, "height": 157 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-06.webp", "x": 384, "y": 1577, "width": 364, "height": 150 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg18/pg18-07.webp", "x": 50, "y": 1348, "width": 310, "height": 201, "cssClass": "fx-fade-in" }
+      ],
+      "hotspots": []
+    }
+  ]
 }

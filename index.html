@@ -7,33 +7,89 @@
 <style>
   html,body{margin:0;background:#0b0f14;color:#e8f0ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Noto Sans TC',sans-serif}
   .wrap{max-width:960px;margin:40px auto;padding:0 16px}
-  h1{font-size:22px;margin:0 0 16px}
+  h1{font-size:22px;margin:0 0 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-  a.item{display:block;background:rgba(17,25,34,.7);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px 12px;text-decoration:none;color:#e8f0ff}
-  a.item:hover{background:rgba(255,255,255,.08)}
-  .muted{opacity:.75}
+  
+  /* 基本卡片樣式 */
+  a.item{
+    display:block;
+    background:rgba(17,25,34,.7);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:20px 16px;
+    text-decoration:none;
+    color:#e8f0ff; 
+    transition: all 0.2s;
+  }
+  a.item:hover{
+    background:rgba(255,255,255,.1); 
+    transform: translateY(-2px); 
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  /* 尚未完成的頁面樣式 (給 pg10 用) */
+  a.item.pending {
+    opacity: 0.5;
+    border-style: dashed;
+  }
+
+  .page-id { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+  .page-title { font-size: 14px; opacity: 0.6; }
+  .muted{opacity:.75; font-size: 14px; margin-bottom: 24px;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>互動式網頁漫畫 · 目錄</h1>
-  <p class="muted">由右往左閱讀。從封面開始：</p>
-  <div class="grid" id="list"></div>
+  <p class="muted">請點擊下方頁面進入閱讀：</p>
+  
+  <div class="grid" id="list">
+    </div>
 </div>
+
 <script>
-const pages = ["CV","pg01","pg02","pg03","pg04","pg05","pg06","pg07","pg08","pg09","pg10","pg11","pg12","pg13","pg14","pg15","pg16","pg17","pg18","pg19"];
-const names = { CV:"封面", pg01:"第01頁", pg02:"第02頁", pg03:"第03頁", pg04:"第04頁", pg05:"第05頁",
-  pg06:"第06頁", pg07:"第07頁", pg08:"第08頁", pg09:"第09頁", pg10:"第10頁",
-  pg11:"第11頁", pg12:"第12頁", pg13:"第13頁", pg14:"第14頁", pg15:"第15頁",
-  pg16:"第16頁", pg17:"第17頁", pg18:"第18頁", pg19:"第19頁" };
-const list = document.getElementById('list');
-pages.forEach(p=>{
-  const a = document.createElement('a');
-  a.className='item';
-  a.href = `reader.html?p=${p}`;
-  a.textContent = names[p] || p;
-  list.appendChild(a);
-});
+  // === 設定頁面清單 (封面 + 19頁) ===
+  const pages = [
+    { id: 'cover', title: '封面' },
+    { id: 'pg01', title: '第 01 頁' },
+    { id: 'pg02', title: '第 02 頁' },
+    { id: 'pg03', title: '第 03 頁' },
+    { id: 'pg04', title: '第 04 頁' },
+    { id: 'pg05', title: '第 05 頁' },
+    { id: 'pg06', title: '第 06 頁' },
+    { id: 'pg07', title: '第 07 頁' },
+    { id: 'pg08', title: '第 08 頁' },
+    { id: 'pg09', title: '第 09 頁' },
+    { id: 'pg10', title: '第 10 頁' },
+    { id: 'pg11', title: '第 11 頁' },
+    { id: 'pg12', title: '第 12 頁' },
+    { id: 'pg13', title: '第 13 頁' },
+    { id: 'pg14', title: '第 14 頁' },
+    { id: 'pg15', title: '第 15 頁' }, 
+    { id: 'pg16', title: '第 16 頁' },
+    { id: 'pg17', title: '第 17 頁' },
+    { id: 'pg18', title: '第 18 頁' },
+    { id: 'pg19', title: '第 19 頁' }
+  ];
+
+  const list = document.getElementById('list');
+
+  pages.forEach(p => {
+    const a = document.createElement('a');
+    a.className = 'item';
+    a.href = `reader.html?page=${p.id}`; 
+    
+    // 如果狀態是 pending (pg10)，加上虛線樣式
+    if (p.status === 'pending') {
+      a.classList.add('pending');
+    }
+
+    a.innerHTML = `
+      <div class="page-id">${p.id.toUpperCase()}</div>
+      <div class="page-title">${p.title}</div>
+    `;
+    list.appendChild(a);
+  });
 </script>
 </body>
 </html>

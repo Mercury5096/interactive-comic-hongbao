@@ -1,157 +1,115 @@
 {
-    "page": {
-        "image": "assets/images/pg15.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 15 頁",
+    "image": "assets/images/pg15.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Wait p01: 等待點擊 p01 (燃燒動畫)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [ { "x": 20, "y": 16, "width": 590, "height": 395 } ]
     },
-    "hotspots": [
+    {
+      "stepId": 2,
+      "comment": "Act p01: 燃燒動畫 (A/B) + 音效 (Burning)",
+      "type": "auto",
+      "//": "★ 修改點 1：時間設為 4000ms (4秒)，配合音效長度",
+      "duration": 4000,
+      "nextStep": 3,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/burning.mp3" },
         {
-            "id": "p01",
-            "x": 20,
-            "y": 16,
-            "width": 590,
-            "height": 395,
-            "action": {
-                "type": "series",
-                "once": true,
-                "blockWhilePlaying": true,
-                "steps": [
-                    {
-                        "type": "sfx",
-                        "src": "assets/audio/burning.mp3",
-                        "volume": 1.0,
-                        "sfxOnce": true,
-                        "sfxKey": "fire-burn"
-                    },
-                    {
-                        "type": "swapFrames",
-                        "frames": [
-                            "assets/images/effects/pg15/pg15-01A.webp",
-                            "assets/images/effects/pg15/pg15-01B.webp"
-                        ],
-                        "pattern": [
-                            0,
-                            1,
-                            0,
-                            1
-                        ],
-                        "durations": [
-                            2500
-                        ],
-                        "persist": true,
-                        "dedupe": true,
-                        "loop": 3,
-                        "blend": "crossfade",
-                        "fadeMs": 160,
-                        "jitterMs": 30
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                    {
-                        "run": "p02"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "p02",
-            "x": 337,
-            "y": 192,
-            "width": 322,
-            "height": 190,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg15/pg15-02.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p03",
-            "x": 20,
-            "y": 430,
-            "width": 1208,
-            "height": 637,
-            "action": {
-                "type": "series",
-                "once": true,
-                "blockWhilePlaying": true,
-                "steps": [
-                    {
-                        "type": "sfx",
-                        "src": "assets/audio/fizzlingmp.mp3",
-                        "volume": 1.0,
-                        "sfxOnce": true
-                    },
-                    {
-                        "type": "swapFrames",
-                        "shakeX": 18,
-                        "shakeY": 8,
-                        "shakeMs": 700,
-                        "shakeHz": 28,
-                        "decay": 0.85,
-                        "frames": [
-                            "assets/images/effects/pg15/pg15-03.webp"
-                        ],
-                        "pattern": [
-                            0
-                        ],
-                        "durations": [
-                            120
-                        ],
-                        "startDelay": 0,
-                        "persist": true,
-                        "dedupe": true,
-                        "loop": false
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 2000
-                    },
-                    {
-                        "run": "p04"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "p04",
-            "x": 89,
-            "y": 1378,
-            "width": 525,
-            "height": 340,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg15/pg15-04.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg15/pg15-01A.webp",
+            "assets/images/effects/pg15/pg15-01B.webp",
+            "assets/images/effects/pg15/pg15-01A.webp"
+          ],
+          "interval": 300,
+          "x": 20, "y": 16, "width": 590, "height": 395,
+          "cssClass": "fx-crossfade"
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Wait p02: 保留 p01 (靜止), 等待點擊 p02",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { 
+          "//": "★ 修改點 2：這裡只放靜態圖，不放 animation，動畫就會停止",
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg15/pg15-01A.webp", 
+          "x": 20, "y": 16, "width": 590, "height": 395 
+        }
+      ],
+      "hotspots": [ { "x": 337, "y": 192, "width": 322, "height": 190 } ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Act p02: 顯示對白 p02",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 5,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-01A.webp", "x": 20, "y": 16, "width": 590, "height": 395 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Wait p03: 保留 1-2, 等待點擊 p03 (連鎖開始: 火丸攻擊)",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-01A.webp", "x": 20, "y": 16, "width": 590, "height": 395 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 }
+      ],
+      "hotspots": [ { "x": 20, "y": 430, "width": 1208, "height": 637 } ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Act p03: 攻擊畫面 (極速震動) + 音效 (Fizzling)",
+      "type": "auto",
+      "//": "★ 修改點 3：時間設為 1500ms (1.5秒)，讓攻擊動作演完再出對白",
+      "duration": 2500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/fizzlingmp.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-01A.webp", "x": 20, "y": 16, "width": 590, "height": 395 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg15/pg15-03.webp", 
+          "x": 20, "y": 430, "width": 1208, "height": 637,
+          "cssClass": "fx-vibrate fx-fade-in" 
+        }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Act p04: 自動顯示怒吼對白 (震動) - 結束",
+      "type": "interaction",
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-01A.webp", "x": 20, "y": 16, "width": 590, "height": 395 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-02.webp", "x": 337, "y": 192, "width": 322, "height": 190 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg15/pg15-03.webp", "x": 20, "y": 430, "width": 1208, "height": 637 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg15/pg15-04.webp", 
+          "x": 89, "y": 1378, "width": 525, "height": 340,
+          "cssClass": "fx-shake fx-fade-in" 
+        }
+      ],
+      "hotspots": []
+    }
+  ]
 }

@@ -1,106 +1,138 @@
 {
-    "page": {
-        "image": "assets/images/pg02.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "assets/audio/bgm_main.mp3",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 02 頁",
+    "image": "assets/images/pg02.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/bgm_main.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Step 1: 待機 - 等待點擊燈光",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [
+        { "x": 797, "y": 19, "width": 423, "height": 412 }
+      ]
     },
-    "hotspots": [
+    {
+      "stepId": 2,
+      "comment": "Step 2: 演出 - 燈光閃爍 (2.5秒)",
+      "type": "auto",
+      "duration": 2500,
+      "nextStep": 3,
+      "actions": [
         {
-            "id": "p01",
-            "x": 797,
-            "y": 19,
-            "width": 423,
-            "height": 412,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg02/lamp_off.webp",
-                    "assets/images/effects/pg02/lamp_on.webp"
-                ],
-                "pattern": [
-                    0,
-                    1,
-                    0,
-                    1,
-                    0,
-                    1,
-                    0
-                ],
-                "interval": 360
-            }
-        },
-        {
-            "id": "p02",
-            "x": 444,
-            "y": 17,
-            "width": 342,
-            "height": 413,
-            "action": {
-                "type": "sfx",
-                "src": "assets/audio/door-closing.mp3",
-                "volume": 0.9
-            }
-        },
-        {
-            "id": "p03",
-            "x": 20,
-            "y": 17,
-            "width": 407,
-            "height": 413,
-            "action": {
-                "type": "sfx",
-                "src": "assets/audio/high-heels.mp3",
-                "volume": 0.9
-            }
-        },
-        {
-            "id": "p04",
-            "x": 856,
-            "y": 458,
-            "width": 365,
-            "height": 598,
-            "action": {
-                "type": "sfx",
-                "src": "assets/audio/wind.mp3",
-                "volume": 0.9
-            }
-        },
-        {
-            "id": "p05",
-            "x": 22,
-            "y": 1076,
-            "width": 383,
-            "height": 659,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg02/frightened1.webp",
-                    "assets/images/effects/pg02/frightened2.webp",
-                    "assets/images/effects/pg02/frightened3.webp"
-                ],
-                "pattern": [
-                    0,
-                    1,
-                    2,
-                    2,
-                    2
-                ],
-                "durations": [
-                    600,
-                    600,
-                    600,
-                    1000,
-                    1000
-                ],
-                "loop": false,
-                "sfx": {
-                    "src": "assets/audio/creepy-sound.mp3",
-                    "volume": 1.0
-                },
-                "sfxOnFrame": 2
-            }
+          "type": "animation",
+          "frames": [
+            "assets/images/effects/pg02/lamp_off.webp",
+            "assets/images/effects/pg02/lamp_on.webp",
+            "assets/images/effects/pg02/lamp_off.webp",
+            "assets/images/effects/pg02/lamp_on.webp",
+            "assets/images/effects/pg02/lamp_off.webp",
+            "assets/images/effects/pg02/lamp_on.webp",
+            "assets/images/effects/pg02/lamp_off.webp"
+          ],
+          "interval": 300,
+          "x": 797, "y": 19, "width": 423, "height": 412
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Step 3: 待機 - 等待點擊關門 (此時無聲)",
+      "type": "interaction",
+      "nextStep": 4,
+      "hotspots": [
+        { "x": 444, "y": 17, "width": 342, "height": 413 }
+      ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Step 4: 演出 - 播放關門聲 (1秒)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 5,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/door-closing.mp3" }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Step 5: 待機 - 等待點擊高跟鞋 (此時無聲)",
+      "type": "interaction",
+      "nextStep": 6,
+      "hotspots": [
+        { "x": 0, "y": 17, "width": 442, "height": 420 }
+      ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Step 6: 演出 - 播放高跟鞋聲 (1.5秒)",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/high-heels.mp3" }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Step 7: 待機 - 等待點擊風聲 (此時無聲)",
+      "type": "interaction",
+      "nextStep": 8,
+      "hotspots": [
+        { "x": 856, "y": 458, "width": 365, "height": 598 }
+      ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Step 8: 演出 - 播放風聲 (1.5秒)",
+      "type": "auto",
+      "duration": 1500,
+      "nextStep": 9,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/wind.mp3" }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Step 9: 待機 - 等待點擊紅包",
+      "type": "interaction",
+      "nextStep": 10,
+      "hotspots": [
+        { "x": 22, "y": 1076, "width": 383, "height": 659 }
+      ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Step 10: 演出 - 紅包動畫 + 驚悚音效 (2秒)",
+      "type": "auto",
+      "duration": 2000,
+      "nextStep": 11,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/creepy-sound.mp3" },
+        {
+          "type": "animation",
+          "loop": false,
+          "frames": [
+            "assets/images/effects/pg02/frightened1.webp",
+            "assets/images/effects/pg02/frightened2.webp",
+            "assets/images/effects/pg02/frightened3.webp"
+          ],
+          "interval": 400,
+          "x": 22, "y": 1076, "width": 383, "height": 659
+        }
+      ]
+    },
+    {
+      "stepId": 11,
+      "comment": "Step 11: 結束 - 特效層已清除，只剩底圖",
+      "type": "interaction",
+      "nextStep": 11,
+      "actions": [],
+      "hotspots": []
+    }
+  ]
 }

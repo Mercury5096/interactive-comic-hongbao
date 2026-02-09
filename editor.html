@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>互動式頁面漫畫 · SVG拖曳預覽(對齊無偏移)</title>
+  <title>互動式頁面漫畫 · 編輯器 (修復版)</title>
   <style>
     :root {
       --max: 1100px;
@@ -54,6 +54,8 @@
       display: block;
       border-radius: 12px;
       box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     .overlay {
@@ -69,6 +71,12 @@
       display: block;
     }
 
+    /* 只有在編輯模式下，overlay 才接受滑鼠事件 */
+    body.edit .overlay {
+      pointer-events: all;
+      cursor: crosshair;
+    }
+
     .hs {
       pointer-events: all;
     }
@@ -81,358 +89,256 @@
       transition: .12s;
     }
 
-    .hs:hover rect,
-    .hs:focus rect {
+    .hs:hover rect {
       fill: rgba(255, 255, 255, .16);
       stroke: #fff;
-      outline: none;
     }
 
+    /* === 介面控制區 === */
     .ui {
       position: fixed;
       left: 16px;
-      right: 16px;
       bottom: 16px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+      z-index: 10001; /* 確保按鈕在上面 */
     }
 
     .pill {
-      background: rgba(17, 25, 34, .7);
-      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(17, 25, 34, .9);
+      border: 1px solid rgba(255, 255, 255, .3);
       border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 14px;
-    }
-
-    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
       cursor: pointer;
-      user-select: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    
+    .pill:hover {
+      background: rgba(64, 128, 255, .8);
+      border-color: #fff;
     }
 
-    .btn[aria-pressed="true"] {
-      background: rgba(64, 128, 255, .22);
-      border-color: rgba(160, 200, 255, .5);
-    }
-
-    /* 編輯模式 */
-    .edit .overlay {
-      cursor: crosshair;
-      pointer-events: all;
-    }
-
+    /* === 輸出視窗 (Export Box) === */
     .exportbox {
       position: fixed;
-      right: 16px;
-      bottom: 72px;
+      /* 強制定位在右下角 */
+      right: 20px;
+      bottom: 20px;
+      width: 320px;
       background: rgba(15, 23, 32, .95);
-      border: 1px solid rgba(255, 255, 255, .15);
+      border: 1px solid rgba(255, 255, 255, .2);
       border-radius: 12px;
-      padding: 10px;
-      width: min(520px, 92vw);
+      padding: 12px;
+      z-index: 10002; /* 最高層級，確保不被蓋住 */
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      display: none; /* 預設隱藏，透過 JS 開啟 */
+    }
+
+    /* 當 body 有 .edit 類別時，顯示輸出框 */
+    body.edit .exportbox {
+      display: block;
     }
 
     .exportbox textarea {
       width: 100%;
-      height: 160px;
-      background: #0b0f14;
-      color: #e8f0ff;
-      border: 1px solid rgba(255, 255, 255, .15);
-      border-radius: 8px;
-      padding: 6px;
-      font-family: ui-monospace, Menlo, Consolas, monospace;
-      font-size: 12px;
+      height: 120px;
+      background: #000;
+      color: #0f0;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      box-sizing: border-box;
+      margin-top: 8px;
     }
 
-    .small {
-      opacity: .78;
-      font-size: 12px;
-    }
-
-    /* === editor: 輸出框變窄 + 可縮放 + 拖曳手把樣式 === */
-    .exportbox {
-      width: min(380px, 80vw);
-      /* 原本 520 → 380，較不擋畫面 */
-      max-height: 60vh;
-      overflow: auto;
-      resize: both;
-      /* 右下角可拖拉改大小 */
-      z-index: 10000;
-      /* 讓它在上層 */
-    }
-
-    .exportbox .drag-handle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
+    .drag-handle {
       cursor: move;
-      user-select: none;
-      touch-action: none;
-      /* 手機也好拖 */
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 8px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
     }
   </style>
 </head>
 
-<body>
-  <header>
-    <h1>互動式頁面漫畫（第 10 頁 / SVG 預覽無偏移）</h1>
-    <p>點左下「編輯模式」→ 直接在圖上拖拉矩形（預覽=結果）→ 右下角輸出 JSON。<br>
-      如需換圖，更新下方 &lt;img&gt; 的 <code>src</code>，其餘自動偵測。</p>
+<body class="edit"> <header>
+    <h1>互動式頁面漫畫 · 編輯器</h1>
+    <p>直接在圖上拖曳畫框，數值會自動出現在右下角視窗。</p>
   </header>
 
   <div class="wrap">
     <div class="page" id="page">
-      <!-- ★ 若你目前的檔名是 assets/images/pg19.webp，保持不變即可 -->
-      <img id="pageImg" src="assets/images/pg19.webp" alt="Page 19" />
+      <img id="pageImg" src="assets/images/pg160.png" alt="Page Image" />
+      
       <div class="overlay" id="overlay">
-        <!-- 我們用同一個 SVG 同時顯示「既有熱區」與「拖曳預覽框」 -->
-        <svg id="svg" viewBox="0 0 10 10" preserveAspectRatio="none" aria-hidden="true">
+        <svg id="svg" preserveAspectRatio="none">
           <g id="hotspotLayer"></g>
-          <!-- 拖曳時的即時預覽矩形 -->
-          <rect id="dragRect" x="0" y="0" width="0" height="0" fill="rgba(255,255,255,.14)"
-            stroke="rgba(255,255,255,.85)" stroke-width="2" rx="8" style="display:none;"></rect>
+          <rect id="dragRect" x="0" y="0" width="0" height="0" 
+            fill="rgba(64, 128, 255, 0.2)" stroke="#4080ff" stroke-width="2" rx="4" 
+            style="display:none;">
+          </rect>
         </svg>
       </div>
     </div>
   </div>
 
   <div class="ui">
-    <button id="editBtn" class="pill btn" aria-pressed="false">🖊️ 編輯模式：關</button>
-    <div class="pill small">拖拉建立矩形；放開後右下角會顯示 JSON。</div>
-  </div>
-  <div class="exportbox" id="exportBox" hidden>
-    <div class="drag-handle">
-      <strong>熱區 JSON</strong>
-      <span class="small" style="opacity:.8;">可拖動到任意位置</span>
-    </div>
-    <div style="margin:0 0 6px 2px;opacity:.9">
-      把下方 JSON 片段貼到你的設定檔（<code>hotspots</code> 陣列）
-    </div>
-    <textarea id="exportTxt" readonly></textarea>
+    <button id="editBtn" class="pill">🖊️ 編輯模式：開</button>
   </div>
 
+  <div class="exportbox" id="exportBox">
+    <div class="drag-handle">JSON 輸出</div>
+    <div style="font-size: 12px; opacity: 0.8;">複製下方內容到設定檔：</div>
+    <textarea id="exportTxt" readonly onclick="this.select()"></textarea>
+  </div>
 
   <script>
-    let PAGE_W = null, PAGE_H = null;
-    let hotspots = []; // 你框好的格子可以貼回這裡預覽
-
+    // === 1. 初始化圖片與 SVG ===
     const img = document.getElementById('pageImg');
-    const overlay = document.getElementById('overlay');
     const svg = document.getElementById('svg');
     const layer = document.getElementById('hotspotLayer');
     const dragRect = document.getElementById('dragRect');
-
-    const editBtn = document.getElementById('editBtn');
-    const exportBox = document.getElementById('exportBox');
     const exportTxt = document.getElementById('exportTxt');
+    const editBtn = document.getElementById('editBtn');
 
-    let editing = false;
-    let dragging = false;
-    let startPt = null; // {x,y} in SVG coords
+    let PAGE_W = 0, PAGE_H = 0;
 
-    // === editor: exportBox 可拖曳 + 記住位置 ===
-    (function initExportBoxDrag() {
-      const handle = exportBox.querySelector('.drag-handle') || exportBox;
-
-      // 還原上次位置
-      try {
-        const saved = JSON.parse(localStorage.getItem('editor_exportbox_pos') || 'null');
-        if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) {
-          exportBox.style.left = saved.left + 'px';
-          exportBox.style.top = saved.top + 'px';
-          exportBox.style.right = 'auto';
-          exportBox.style.bottom = 'auto';
-        }
-      } catch (e) { }
-
-      let sx = 0, sy = 0, sl = 0, st = 0, moving = false;
-      function onDown(ev) {
-        if (ev.button !== 0 && ev.pointerType === 'mouse') return;
-        ev.preventDefault();
-        const r = exportBox.getBoundingClientRect();
-        sx = ev.clientX; sy = ev.clientY; sl = r.left; st = r.top; moving = true;
-        exportBox.style.right = 'auto'; exportBox.style.bottom = 'auto';
-        window.addEventListener('pointermove', onMove);
-        window.addEventListener('pointerup', onUp, { once: true });
-      }
-      function onMove(ev) {
-        if (!moving) return;
-        const left = sl + (ev.clientX - sx);
-        const top = st + (ev.clientY - sy);
-        exportBox.style.left = left + 'px';
-        exportBox.style.top = top + 'px';
-      }
-      function onUp() {
-        moving = false;
-        window.removeEventListener('pointermove', onMove);
-        try {
-          const left = parseInt(exportBox.style.left || '0', 10) || 0;
-          const top = parseInt(exportBox.style.top || '0', 10) || 0;
-          localStorage.setItem('editor_exportbox_pos', JSON.stringify({ left, top }));
-        } catch (e) { }
-      }
-      handle.addEventListener('pointerdown', onDown);
-    })();
-
-
-    // 1) 自動偵測圖片原始尺寸 → 設定 viewBox
-    function setupViewBox() {
+    // 當圖片載入完成，設定 SVG 尺寸
+    function initSize() {
       PAGE_W = img.naturalWidth;
       PAGE_H = img.naturalHeight;
-      svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
-      renderHotspots();
+      if (PAGE_W > 0) {
+        svg.setAttribute('viewBox', `0 0 ${PAGE_W} ${PAGE_H}`);
+        console.log(`圖片載入成功: ${PAGE_W} x ${PAGE_H}`);
+      }
     }
-    if (img.complete && img.naturalWidth) setupViewBox();
-    else img.addEventListener('load', setupViewBox);
+    if (img.complete) initSize();
+    img.onload = initSize;
 
-    // 2) 渲染既有熱區
-    function renderHotspots() {
-      layer.innerHTML = '';
-      (hotspots || []).forEach(h => {
-        const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
-        a.setAttribute('class', 'hs'); a.setAttribute('href', '#'); a.setAttribute('tabindex', '0'); a.dataset.id = h.id || '';
-        const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        r.setAttribute('x', h.x); r.setAttribute('y', h.y);
-        r.setAttribute('width', h.width); r.setAttribute('height', h.height);
-        r.setAttribute('rx', 8);
-        a.appendChild(r);
-        layer.appendChild(a);
-      });
-    }
-
-    // 3) 編輯模式切換
-    function setEditMode(val) {
-      editing = val;
+    // === 2. 編輯模式切換 ===
+    let editing = true; // 預設開啟
+    editBtn.addEventListener('click', () => {
+      editing = !editing;
       document.body.classList.toggle('edit', editing);
-      exportBox.hidden = !editing;
-      editBtn.setAttribute('aria-pressed', String(editing));
       editBtn.textContent = editing ? '🖊️ 編輯模式：開' : '🖊️ 編輯模式：關';
-      if (!editing) endDrag(); // 關閉時清除拖曳
-    }
-    editBtn.addEventListener('click', () => setEditMode(!editing));
+      editBtn.style.background = editing ? 'rgba(64, 128, 255, .8)' : 'rgba(17, 25, 34, .9)';
+    });
 
-    // 4) 將 clientX/Y 轉為 SVG（圖片原始像素）座標
-    function clientToSvgPoint(clientX, clientY) {
-      const r = overlay.getBoundingClientRect();
-      const nx = (clientX - r.left) / r.width;
-      const ny = (clientY - r.top) / r.height;
+    // === 3. 座標轉換 (滑鼠 -> SVG 座標) ===
+    function getSvgPoint(clientX, clientY) {
+      const pt = svg.createSVGPoint();
+      pt.x = clientX;
+      pt.y = clientY;
+      // 使用 CTM 轉換螢幕座標到 SVG 內部座標
+      const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
       return {
-        x: Math.max(0, Math.min(PAGE_W, nx * PAGE_W)),
-        y: Math.max(0, Math.min(PAGE_H, ny * PAGE_H))
+        x: Math.round(Math.max(0, Math.min(PAGE_W, svgP.x))),
+        y: Math.round(Math.max(0, Math.min(PAGE_H, svgP.y)))
       };
     }
 
-    // 5) 拖曳流程（pointer 事件同時支援滑鼠/觸控/手寫筆）
-    overlay.addEventListener('pointerdown', (ev) => {
-      if (!editing || PAGE_W == null) return;
-      overlay.setPointerCapture(ev.pointerId);
-      dragging = true;
-      startPt = clientToSvgPoint(ev.clientX, ev.clientY);
-      // 初始化預覽框
-      dragRect.style.display = 'block';
+    // === 4. 拖曳畫框邏輯 ===
+    let isDrawing = false;
+    let startPt = { x: 0, y: 0 };
+
+    const overlay = document.getElementById('overlay');
+
+    overlay.addEventListener('mousedown', (e) => {
+      if (!editing || PAGE_W === 0) return;
+      isDrawing = true;
+      startPt = getSvgPoint(e.clientX, e.clientY);
+      
+      // 初始化紅框
       dragRect.setAttribute('x', startPt.x);
       dragRect.setAttribute('y', startPt.y);
       dragRect.setAttribute('width', 0);
       dragRect.setAttribute('height', 0);
+      dragRect.style.display = 'block';
+      e.preventDefault(); // 防止選取圖片
     });
 
-    overlay.addEventListener('pointermove', (ev) => {
-      if (!dragging || !editing) return;
-      const p = clientToSvgPoint(ev.clientX, ev.clientY);
-      const x = Math.min(startPt.x, p.x);
-      const y = Math.min(startPt.y, p.y);
-      const w = Math.abs(startPt.x - p.x);
-      const h = Math.abs(startPt.y - p.y);
+    window.addEventListener('mousemove', (e) => {
+      if (!isDrawing) return;
+      const currPt = getSvgPoint(e.clientX, e.clientY);
+
+      const x = Math.min(startPt.x, currPt.x);
+      const y = Math.min(startPt.y, currPt.y);
+      const w = Math.abs(startPt.x - currPt.x);
+      const h = Math.abs(startPt.y - currPt.y);
+
       dragRect.setAttribute('x', x);
       dragRect.setAttribute('y', y);
       dragRect.setAttribute('width', w);
       dragRect.setAttribute('height', h);
     });
 
-    function endDrag(ev) {
-      if (!dragging) return;
-      dragging = false;
-      // 若 mouseup 發生在外面，用最後一次 dragRect 尺寸；否則用事件座標
-      let x = parseFloat(dragRect.getAttribute('x'));
-      let y = parseFloat(dragRect.getAttribute('y'));
-      let w = parseFloat(dragRect.getAttribute('width'));
-      let h = parseFloat(dragRect.getAttribute('height'));
-      if (ev && ev.clientX != null) {
-        const p = clientToSvgPoint(ev.clientX, ev.clientY);
-        x = Math.round(Math.min(startPt.x, p.x));
-        y = Math.round(Math.min(startPt.y, p.y));
-        w = Math.round(Math.abs(startPt.x - p.x));
-        h = Math.round(Math.abs(startPt.y - p.y));
-      } else {
-        // 保險取整
-        x = Math.round(x); y = Math.round(y);
-        w = Math.round(w); h = Math.round(h);
-      }
-      // 清除預覽
+    window.addEventListener('mouseup', () => {
+      if (!isDrawing) return;
+      isDrawing = false;
       dragRect.style.display = 'none';
-      dragRect.setAttribute('width', 0);
-      dragRect.setAttribute('height', 0);
 
-      // 忽略零面積拖曳
-      if (w <= 0 || h <= 0) return;
+      // 取得最終數值
+      const x = parseInt(dragRect.getAttribute('x'));
+      const y = parseInt(dragRect.getAttribute('y'));
+      const w = parseInt(dragRect.getAttribute('width'));
+      const h = parseInt(dragRect.getAttribute('height'));
 
-      const id = 'p' + String((hotspots?.length || 0) + 1).padStart(2, '0');
-      const snippet = { id, x, y, width: w, height: h, action: { type: 'none' } };
-      exportTxt.value = JSON.stringify(snippet, null, 2);
-      // 即時加到預覽
-      hotspots.push(snippet);
-      renderHotspots();
-    }
+      // 如果框太小就不算
+      if (w < 5 || h < 5) return;
 
-    overlay.addEventListener('pointerup', endDrag);
-    overlay.addEventListener('pointercancel', endDrag);
+      // 1. 產生 JSON
+      const jsonSnippet = `{ "x": ${x}, "y": ${y}, "width": ${w}, "height": ${h} }`;
+      exportTxt.value = jsonSnippet + ","; // 加個逗號方便複製
 
-    // 6) 代理點擊（之後用來觸發 action，例如 swapFrames）
-    // 事件分派（統一入口）— 僅此一個，不要再巢狀新增監聽器
-    svg.addEventListener('click', async (ev) => {
-      // 先嘗試從事件目標往上找 .hs
-      let node = ev.target.closest('.hs');
-
-      // 找不到就用座標做 fallback 命中測試
-      if (!node) {
-        const pt = svg.createSVGPoint();
-        pt.x = ev.clientX;
-        pt.y = ev.clientY;
-        const ctm = svg.getScreenCTM();
-        if (ctm) {
-          const p = pt.matrixTransform(ctm.inverse());
-          const hsList = [...hotspotLayer.querySelectorAll('.hs')];
-          // 從最上層開始找（後插入的在最上面）
-          for (let i = hsList.length - 1; i >= 0; i--) {
-            const g = hsList[i];
-            if (g.style.pointerEvents === 'none') continue;
-            const r = g.querySelector('rect'); if (!r) continue;
-            const x = parseFloat(r.getAttribute('x')) || 0;
-            const y = parseFloat(r.getAttribute('y')) || 0;
-            const w = parseFloat(r.getAttribute('width')) || 0;
-            const h = parseFloat(r.getAttribute('height')) || 0;
-            if (p.x >= x && p.x <= x + w && p.y >= y && p.y <= y + h) { node = g; break; }
-          }
-        }
-      }
-      if (!node) return;
-
-      ev.preventDefault();
-
-      const id = node.dataset.id;
-      const h = (cfg.hotspots || []).find(x => x.id === id);
-      if (!h || !h.action) return;
-
-      // 點擊當下就收掉黃框 + 停用點擊
-      node.classList.add('done');
-      node.style.pointerEvents = 'none';
-
-      await runAction(h, withDefaults(h.action));
+      // 2. 在畫面上留下一個白框當參考
+      const newRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      newRect.setAttribute('x', x);
+      newRect.setAttribute('y', y);
+      newRect.setAttribute('width', w);
+      newRect.setAttribute('height', h);
+      newRect.setAttribute('fill', 'rgba(255,255,255,0.2)');
+      newRect.setAttribute('stroke', '#fff');
+      newRect.setAttribute('stroke-width', '1');
+      layer.appendChild(newRect);
+      
+      // 自動選取文字框，方便複製
+      exportTxt.select();
     });
 
+    // === 5. 讓 exportBox 可以簡單拖曳 (不記憶位置，避免跑掉) ===
+    const exportBox = document.getElementById('exportBox');
+    const handle = exportBox.querySelector('.drag-handle');
+    let isDraggingBox = false;
+    let boxOffset = { x: 0, y: 0 };
+
+    handle.addEventListener('mousedown', (e) => {
+      isDraggingBox = true;
+      const rect = exportBox.getBoundingClientRect();
+      boxOffset.x = e.clientX - rect.left;
+      boxOffset.y = e.clientY - rect.top;
+      // 清除 right/bottom 設定，改用 left/top 定位
+      exportBox.style.right = 'auto';
+      exportBox.style.bottom = 'auto';
+      exportBox.style.left = rect.left + 'px';
+      exportBox.style.top = rect.top + 'px';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDraggingBox) return;
+      exportBox.style.left = (e.clientX - boxOffset.x) + 'px';
+      exportBox.style.top = (e.clientY - boxOffset.y) + 'px';
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDraggingBox = false;
+    });
 
   </script>
+</body>
+
+</html>

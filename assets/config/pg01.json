@@ -1,47 +1,75 @@
 {
   "page": {
+    "title": "第 01 頁",
     "image": "assets/images/pg01.webp",
     "width": 1241,
     "height": 1754,
-    "bgm": "assets/audio/bgm_main.mp3",
-    "requireAudioUnlock": false
+    "bgm": "assets/audio/bgm_main.mp3"
   },
-  "hotspots": [
+  "steps": [
     {
-      "id": "p01",
-      "x": 0,
-      "y": 0,
-      "width": 1241,
-      "height": 1754,
-       "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg01/slimy0.webp",
-                    "assets/images/effects/pg01/slimy1.webp"
-                ],
-                "pattern": [
-                    0,
-                    1,
-                    0,
-                    1,
-                    0,
-                    1
-                ],
-                "durations": [
-                    1000,
-                    1000,
-                    1000,
-                    1000,
-                    1000,
-                    1000
-                ],
-                "loop": false,
-                "sfx": {
-                    "src": "assets/audio/slimy-pasta-stir.mp3",
-                    "volume": 1.0
-                },
-                "sfxOnFrame": 0
-            }
+      "stepId": 1,
+      "comment": "Step 1: 待機狀態 (全螢幕白框，等待點擊觸發)",
+      "type": "interaction",
+      "nextStep": 2,
+      "actions": [
+        {
+          "//": "剛開始先顯示第一張 slimy0 作為預備",
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg01/slimy0.webp",
+          "x": 0, "y": 0, "width": 1241, "height": 1754
+        }
+      ],
+      "hotspots": [
+        {
+          "//": "全螢幕熱點，滑鼠移過去會有白框",
+          "x": 0, "y": 0, "width": 1241, "height": 1754
+        }
+      ]
+    },
+    {
+      "stepId": 2,
+      "comment": "Step 2: 演出狀態 (6秒動畫 + 6秒音效)",
+      "type": "auto",
+      "duration": 6000, 
+      "nextStep": 3,
+      "actions": [
+        { 
+          "type": "sfx", 
+          "src": "assets/audio/slimy-pasta-stir.mp3" 
+        },
+        {
+          "type": "animation",
+          "loop": false,
+          "//": "總共 6 張圖，每張 1000ms = 剛好 6000ms (6秒)",
+          "frames": [
+            "assets/images/effects/pg01/slimy0.webp",
+            "assets/images/effects/pg01/slimy1.webp",
+            "assets/images/effects/pg01/slimy0.webp",
+            "assets/images/effects/pg01/slimy1.webp",
+            "assets/images/effects/pg01/slimy0.webp",
+            "assets/images/effects/pg01/slimy1.webp",
+            "assets/images/effects/pg01/slimy0.webp"
+          ],
+          "interval": 1000,
+          "x": 0, "y": 0, "width": 1241, "height": 1754
+        }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Step 3: 結束狀態 (定格在最後一張，白框消失)",
+      "type": "interaction",
+      "nextStep": 3,
+      "actions": [
+        {
+          "//": "定格在 slimy1 (動畫的最後一張)",
+          "type": "image_overlay",
+          "src": "assets/images/effects/pg01/slimy1.webp",
+          "x": 0, "y": 0, "width": 1241, "height": 1754
+        }
+      ],
+      "hotspots": []
     }
   ]
 }

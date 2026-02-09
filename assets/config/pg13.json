@@ -1,259 +1,226 @@
 {
-    "page": {
-        "image": "assets/images/pg13.webp",
-        "width": 1241,
-        "height": 1754,
-        "bgm": "none",
-        "requireAudioUnlock": false
+  "page": {
+    "title": "第 13 頁",
+    "image": "assets/images/pg13.webp",
+    "width": 1241,
+    "height": 1754,
+    "bgm": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3"
+  },
+  "steps": [
+    {
+      "stepId": 1,
+      "comment": "Wait p01: 等待點擊 p01 (對白)",
+      "type": "interaction",
+      "nextStep": 2,
+      "hotspots": [ { "x": 718, "y": 22, "width": 248, "height": 188 } ]
     },
-    "hotspots": [
+    {
+      "stepId": 2,
+      "comment": "Act p01: 顯示 p01",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 3,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 3,
+      "comment": "Wait p02: 保留 p01, 等待點擊 p02 (驚喘聲 + 對白)",
+      "type": "interaction",
+      "nextStep": 4,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 }
+      ],
+      "hotspots": [ { "x": 1019, "y": 491, "width": 100, "height": 68 } ]
+    },
+    {
+      "stepId": 4,
+      "comment": "Act p02: 顯示 p02 + 音效",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 5,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/women-gasping.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 5,
+      "comment": "Wait p03: 保留 1-2, 等待點擊 p03 (對白)",
+      "type": "interaction",
+      "nextStep": 6,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 }
+      ],
+      "hotspots": [ { "x": 718, "y": 479, "width": 181, "height": 181 } ]
+    },
+    {
+      "stepId": 6,
+      "comment": "Act p03: 顯示 p03",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 7,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 7,
+      "comment": "Wait p04: 保留 1-3, 等待點擊 p04 (對白)",
+      "type": "interaction",
+      "nextStep": 8,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 }
+      ],
+      "hotspots": [ { "x": 227, "y": 308, "width": 220, "height": 171 } ]
+    },
+    {
+      "stepId": 8,
+      "comment": "Act p04: 顯示 p04",
+      "type": "auto",
+      "duration": 500,
+      "nextStep": 9,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171, "cssClass": "fx-fade-in" }
+      ]
+    },
+    {
+      "stepId": 9,
+      "comment": "Wait p05: 保留 1-4, 等待點擊 p05 (電擊連鎖開始)",
+      "type": "interaction",
+      "nextStep": 10,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 }
+      ],
+      "hotspots": [ { "x": 19, "y": 541, "width": 714, "height": 996 } ]
+    },
+    {
+      "stepId": 10,
+      "comment": "Act p05 (Phase 1): 第 1 次電擊聲 + 動畫前半段 (2秒)",
+      "type": "auto",
+      "duration": 2000,
+      "nextStep": 11,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/electric-impact.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
         {
-            "id": "p01",
-            "x": 718,
-            "y": 22,
-            "width": 248,
-            "height": 188,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg13/pg13-01.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false,
-                "sfx": {
-                    "src": "assets/audio/Dead Wrong - Jeremy Blake-BG.mp3",
-                    "volume": 0.5
-                },
-                "sfxOnFrame": 0,
-                "sfxOnce": true,
-                "once": true,
-                "blockWhilePlaying": true
-            }
-        },
-        {
-            "id": "p02",
-            "x": 1019,
-            "y": 491,
-            "width": 100,
-            "height": 68,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg13/pg13-02.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false,
-                "sfx": {
-                    "src": "assets/audio/women-gasping.mp3",
-                    "volume": 1.0
-                },
-                "sfxOnFrame": 0,
-                "sfxOnce": true,
-                "once": true,
-                "blockWhilePlaying": true
-            }
-        },
-        {
-            "id": "p03",
-            "x": 718,
-            "y": 479,
-            "width": 181,
-            "height": 181,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg13/pg13-03.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p04",
-            "x": 227,
-            "y": 308,
-            "width": 220,
-            "height": 171,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg13/pg13-04.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p05",
-            "x": 19,
-            "y": 541,
-            "width": 714,
-            "height": 996,
-            "action": {
-                "type": "series",
-                "once": true,
-                "blockWhilePlaying": true,
-                "steps": [
-                    {
-                        "type": "swapFrames",
-                        "frames": [
-                            "assets/images/effects/pg13/pg13-05A.webp",
-                            "assets/images/effects/pg13/pg13-05B.webp",
-                            "assets/images/effects/pg13/pg13-05C.webp"
-                        ],
-                        "pattern": [
-                            0,
-                            1,
-                            2,
-                            1
-                        ],
-                        "durations": [
-                            560,
-                            560,
-                            560,
-                            560
-                        ],
-                        "persist": true,
-                        "dedupe": true,
-                        "loop": 3,
-                        "blend": "crossfade",
-                        "fadeMs": 160,
-                        "jitterMs": 30,
-                        "preSfx": {
-                            "src": "assets/audio/electric-impact.mp3",
-                            "volume": 1.0
-                        },
-                        "startDelay": 0,
-                        "sfxOnce": true,
-                        "sfxKey": "assets/audio/electric-impact.mp3"
-                    },
-                    {
-                        "run": "p06"
-                    },
-                    {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                      {
-                        "run": "p07"
-                    },
-                     {
-                        "type": "delay",
-                        "ms": 560
-                    },
-                      {
-                        "run": "p08"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "p06",
-            "x": 431,
-            "y": 732,
-            "width": 269,
-            "height": 259,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg13/pg13-06.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
-        },
-        {
-            "id": "p07",
-            "x": 18,
-            "y": 1334,
-            "width": 666,
-            "height": 405,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "series",
-                "once": true,
-                "blockWhilePlaying": true,
-                "steps": [
-                    {
-                        "type": "swapFrames",
-                        "frames": [
-                            "assets/images/effects/pg13/pg13-08.webp"
-                        ],
-                        "pattern": [
-                            0
-                        ],
-                        "durations": [
-                            1000
-                        ],
-                        "persist": true,
-                        "dedupe": true,
-                        "loop": false
-                    }
-                ]
-            }
-        },
-        {
-            "id": "p08",
-            "x": 44,
-            "y": 1267,
-            "width": 265,
-            "height": 196,
-            "clickable": false,
-            "hint": false,
-            "action": {
-                "type": "swapFrames",
-                "frames": [
-                    "assets/images/effects/pg13/pg13-07.webp"
-                ],
-                "pattern": [
-                    0
-                ],
-                "durations": [
-                    120
-                ],
-                "startDelay": 500,
-                "persist": true,
-                "dedupe": true,
-                "loop": false
-            }
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg13/pg13-05A.webp",
+            "assets/images/effects/pg13/pg13-05B.webp",
+            "assets/images/effects/pg13/pg13-05C.webp",
+            "assets/images/effects/pg13/pg13-05B.webp"
+          ],
+          "//": "★ 速度加快到 250ms，產生高頻電擊感",
+          "interval": 250,
+          "x": 19, "y": 541, "width": 714, "height": 996,
+          "cssClass": "fx-crossfade"
         }
-    ]
+      ]
+    },
+    {
+      "stepId": 11,
+      "comment": "Act p05 (Phase 2): 第 2 次電擊聲 + 動畫後半段 (2秒)",
+      "type": "auto",
+      "duration": 2000,
+      "nextStep": 12,
+      "actions": [
+        { "type": "sfx", "src": "assets/audio/electric-impact.mp3" },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        {
+          "type": "animation",
+          "loop": true,
+          "frames": [
+            "assets/images/effects/pg13/pg13-05A.webp",
+            "assets/images/effects/pg13/pg13-05B.webp",
+            "assets/images/effects/pg13/pg13-05C.webp",
+            "assets/images/effects/pg13/pg13-05B.webp"
+          ],
+          "interval": 250,
+          "x": 19, "y": 541, "width": 714, "height": 996,
+          "cssClass": "fx-crossfade"
+        }
+      ]
+    },
+    {
+      "stepId": 12,
+      "comment": "Act p06: 自動顯示 p06 (pg13-06) - 電擊結束",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 13,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg13/pg13-06.webp", 
+          "x": 431, "y": 732, "width": 269, "height": 259, 
+          "cssClass": "fx-fade-in" 
+        }
+      ]
+    },
+    {
+      "stepId": 13,
+      "comment": "Act p07: 自動顯示 p07 (pg13-08)",
+      "type": "auto",
+      "duration": 1000,
+      "nextStep": 14,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-06.webp", "x": 431, "y": 732, "width": 269, "height": 259 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg13/pg13-08.webp", 
+          "x": 18, "y": 1334, "width": 666, "height": 405, 
+          "cssClass": "fx-fade-in" 
+        }
+      ]
+    },
+    {
+      "stepId": 14,
+      "comment": "Act p08: 自動顯示 p08 (pg13-07) - 結束",
+      "type": "interaction",
+      "nextStep": 14,
+      "actions": [
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-01.webp", "x": 718, "y": 22, "width": 248, "height": 188 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-02.webp", "x": 1019, "y": 491, "width": 100, "height": 68 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-03.webp", "x": 718, "y": 479, "width": 181, "height": 181 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-04.webp", "x": 227, "y": 308, "width": 220, "height": 171 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-06.webp", "x": 431, "y": 732, "width": 269, "height": 259 },
+        { "type": "image_overlay", "src": "assets/images/effects/pg13/pg13-08.webp", "x": 18, "y": 1334, "width": 666, "height": 405 },
+        { 
+          "type": "image_overlay", 
+          "src": "assets/images/effects/pg13/pg13-07.webp", 
+          "x": 44, "y": 1267, "width": 265, "height": 196, 
+          "cssClass": "fx-fade-in" 
+        }
+      ],
+      "hotspots": []
+    }
+  ]
 }

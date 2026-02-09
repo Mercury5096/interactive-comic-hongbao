@@ -74,11 +74,30 @@ header .title { font-size: 16px; opacity: .9; }
 }
 .overlay svg { width: 100%; height: 100%; display: block; }
 .muted { opacity: .7; }
+/* === 熱點樣式 (修改版：探索式互動) === */
+
+/* 1. 預設狀態：完全透明 (看不到框) */
 .hs rect {
-  fill: rgba(255, 223, 0, .16);
-  stroke: rgba(255, 223, 0, .9);
-  stroke-width: 2; rx: 8;
-  transition: fill .2s ease, stroke .2s ease, opacity .2s ease;
+  fill: transparent;      /* 填充透明 */
+  stroke: transparent;    /* 邊框透明 */
+  stroke-width: 3;        /* 邊框稍微加粗，讓白框更明顯 */
+  rx: 8;                  /* 圓角 */
+  transition: all 0.3s ease; /* 設定淡入淡出的過渡動畫 */
+}
+
+/* 2. 滑鼠懸停 (Hover) 狀態：淡入白色框 */
+/* 當滑鼠移到 .interactive (可互動) 群組上時，裡面的 rect 才會變色 */
+.hs.interactive:hover rect {
+  fill: rgba(255, 255, 255, 0.1);  /* 極淡的白色填充 (10% 透明度) */
+  stroke: rgba(255, 255, 255, 0.9); /* 明亮的白色邊框 (90% 透明度) */
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8)); /* 增加一點發光暈開的感覺 */
+}
+
+/* 3. 點擊瞬間 (Active) 狀態：稍微變亮，提供回饋 */
+.hs.interactive:active rect {
+  fill: rgba(255, 255, 255, 0.3);
+  stroke: #ffffff;
+  transition: none; /* 點擊時立即反應，不需要過渡時間 */
 }
 .hs.done rect { fill: rgba(0, 0, 0, .001); stroke: transparent; }
 .overlay *:focus { outline: none !important; }
@@ -120,4 +139,146 @@ body.loading #pageImg{ opacity: 0; }
 body.fx-hidden #fxLayer,
 body.fx-hidden #hotspotLayer{ opacity: 0; pointer-events: none; }
 
+/* === 通用動畫特效庫 (Type B 氛圍營造專用) === */
+
+/* 1. 淡入效果 (Fade In) */
+/* === 通用動畫特效庫 (優化版 v2) === */
+
+/* 1. 淡入效果 (保持不變) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.fx-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* 2. 高頻混亂震動效果 (Shake - Chaotic & Fast) */
+/* 特點：速度快、幅度小、數值不規律，模擬不穩定的顫抖 */
+@keyframes shake {
+  0%  { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-2px, 1px) rotate(-0.5deg); } /* 微幅左移加一點旋轉 */
+  20% { transform: translate(3px, -2px) rotate(0.5deg); }  /* 突然往右上方跳 */
+  30% { transform: translate(-1px, 3px) rotate(0deg); }    /* 往下沉 */
+  40% { transform: translate(2px, -1px) rotate(-0.5deg); }
+  50% { transform: translate(-3px, 0px) rotate(0.5deg); }  /* 往左猛推 */
+  60% { transform: translate(1px, 2px) rotate(0deg); }
+  70% { transform: translate(-2px, -3px) rotate(-0.5deg); } /* 往左上跳 */
+  80% { transform: translate(3px, 1px) rotate(0.5deg); }
+  90% { transform: translate(-1px, -1px) rotate(0deg); }
+  100%{ transform: translate(0, 0) rotate(0deg); }
+}
+
+.fx-shake {
+  /* 關鍵參數調整：*/
+  /* 0.3s：非常快速地完成一次震動循環 */
+  animation: shake 0.3s linear; 
+  
+  /* 5：連續播放 5 次，總共持續約 1.5 秒的高頻顫抖 */
+  /* 如果希望一直抖不停，可以把 5 改成 infinite */
+  animation-iteration-count: 5; 
+}
+
+/* 3. 呼吸燈效果 (保持不變) */
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+.fx-flash {
+  animation: flash 2s infinite;
+}
+
+/* =========================================
+   新增特效：極速震動 (Vibration)
+   特點：頻率極快、幅度極小，模擬電流或驚悚的嗡嗡聲感
+========================================= */
+@keyframes vibrate {
+  0%  { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }  /* 幅度控制在 2px 以內 */
+  50% { transform: translate(0, -2px); }
+  75% { transform: translate(2px, 0px); }
+  100%{ transform: translate(0, 0); }
+}
+
+.fx-vibrate {
+  /* 關鍵設定：0.05秒就完成一次循環，超級快 */
+  animation: vibrate 0.05s linear infinite; 
+  
+  /* 重複 30 次，製造持續約 1.5 秒的高頻震動感 */
+  /* 如果覺得震太久，把 30 改小；覺得不夠久，改大 */
+  animation-iteration-count: 30; 
+}
+
+/* =========================================
+   新增特效：圖片切換柔化 (Crossfade)
+   讓動畫切換時帶有短暫的透明度變化，減少生硬感
+========================================= */
+@keyframes crossfade {
+  0% { opacity: 0.4; }   /* 開始時半透明 */
+  50% { opacity: 1; }    /* 中間完全顯示 */
+  100% { opacity: 0.4; } /* 結束時又變半透明 */
+}
+
+.fx-crossfade {
+  /* 動畫時間必須跟 JSON 裡的 interval 一致或略短 */
+  /* 這裡我們設為 0.3s (300ms)，剛好配合你的 interval: 300 */
+  animation: crossfade 0.3s ease-in-out infinite;
+}
+
+/* =========================================
+   新增特效：向上滑入 (Slide Up)
+   讓圖片從下方滑進來，營造動態登場感
+========================================= */
+@keyframes slideInUp {
+  from { 
+    transform: translateY(100px); /* 從下方 100px 處開始 */
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0);     /* 回到原位 */
+    opacity: 1; 
+  }
+}
+
+.fx-slide-up {
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* =========================================
+   新增特效：慢速鬼魂呼吸 (Slow Ghost)
+   時間設為 1.2s，專門用來配合 1200ms 的換圖頻率
+   讓圖片在切換瞬間剛好是最模糊的，達成無縫銜接
+========================================= */
+.fx-slow-ghost {
+  /* 使用原本定義好的 crossfade 關鍵影格，但時間拉長到 1.2秒 */
+  animation: crossfade 1.2s ease-in-out infinite;
+}
+
+/* =========================================
+   新增特效：向右滑入 (Slide Right)
+   讓圖片從左側衝進來，適合表現「衝撞」或「擋格」
+========================================= */
+@keyframes slideInRight {
+  from { 
+    transform: translateX(-100px); /* 從左側 100px 處開始 */
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0);      /* 回到原位 */
+    opacity: 1; 
+  }
+}
+
+.fx-slide-right {
+  animation: slideInRight 0.3s ease-out forwards; /* 速度快一點 (0.3s) 才有衝擊力 */
+}
+
+/* =========================================
+   新增特效：慢速淡入 (Slow Fade In)
+   時間設為 2.5s，適合用在情緒轉折或逃出生天的場景
+========================================= */
+.fx-fade-in-slow {
+  animation: fadeIn 2.5s ease-in forwards;
+}
 
