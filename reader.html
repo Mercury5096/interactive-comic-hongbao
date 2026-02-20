@@ -64,6 +64,53 @@
     const params = new URLSearchParams(location.search);
     const pageId = params.get('page') || 'pg15';
 
+    // === 預載函數（新增） ===
+    // 預載單張圖片（不阻塞主緒）
+    function preloadImage(src) {
+      if (!src) return Promise.resolve();
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve; // 即使失敗也繼續
+        img.src = src;
+      });
+    }
+
+    // 批量預載下一兩步的資源（非阻塞）
+    async function preloadNextResources(stepId) {
+      
+      if (!pageData || !pageData.steps) return;
+
+      const promises = [];
+
+      // 預載當前步的資源
+      const currentStepData = pageData.steps.find(s => s.stepId === stepId);
+      if (currentStepData) {
+        currentStepData.actions?.forEach(action => {
+          if (action.type === 'image_overlay' && action.src) {
+            promises.push(preloadImage(action.src));
+          } else if (action.type === 'animation' && action.frames) {
+            action.frames.forEach(frame => promises.push(preloadImage(frame)));
+          }
+        });
+      }
+
+      // 預載下一兩步的資源（可調整深度，預設2）
+      const nextSteps = pageData.steps.filter(s => s.stepId > stepId && s.stepId <= stepId + 2);
+      nextSteps.forEach(step => {
+        step.actions?.forEach(action => {
+          if (action.type === 'image_overlay' && action.src) {
+            promises.push(preloadImage(action.src));
+          } else if (action.type === 'animation' && action.frames) {
+            action.frames.forEach(frame => promises.push(preloadImage(frame)));
+          }
+        });
+      });
+
+      await Promise.all(promises);
+      console.log(`Preloaded resources for step ${stepId} and next 2 steps`);
+    }
+
     // === 初始化 ===
     async function init() {
       const jsonPath = `assets/config/${pageId}.json`;
@@ -101,6 +148,9 @@
         // 5. 開始渲染第一步
         renderStep(1);
 
+        // 新增：預載第一步 + 下一兩步資源
+        preloadNextResources(1);
+
       } catch (err) {
         console.error(err);
         alert(`讀取錯誤：\n請確認 ${jsonPath} 是否存在。\n\n詳細錯誤：${err.message}`);
@@ -135,138 +185,95 @@
 
       // 1. 清除上一步的熱點
       const hotspotLayer = document.getElementById('hotspotLayer');
-      hotspotLayer.innerHTML = ''; 
-      
-      // ★ 2. 新增這行：清除上一步的特效/圖片 (解決 pg02 最後紅包殘留的問題)
-      document.getElementById('fxLayer').innerHTML = '';
+      hotspotLayer.innerHTML = '';
 
-      // 3. 清除計時器與動畫
-      clearTimeout(autoTimer);
-      activeIntervals.forEach(id => clearInterval(id));
+      // 2. 清除上一步的特效層（避免殘留）
+      const fxLayer = document.getElementById('fxLayer');
+      fxLayer.innerHTML = '';
+
+      // 清除上一步的計時器
+      activeIntervals.forEach(clearInterval);
       activeIntervals = [];
 
-      // 找步驟
-      const stepData = pageData.steps.find(s => s.stepId === stepId);
-
-      if (!stepData) {
-        console.warn('找不到步驟資料，可能已結束');
-        return;
+      if (autoTimer) {
+        clearTimeout(autoTimer);
+        autoTimer = null;
       }
 
-      // 執行 Actions
-      if (stepData.actions) {
-        stepData.actions.forEach(action => executeAction(action));
+      // 找出當前步驟
+      const step = pageData.steps.find(s => s.stepId === stepId);
+      if (!step) return console.error(`找不到步驟 ${stepId}`);
+
+      // 執行所有動作
+      step.actions?.forEach(executeAction);
+
+      // 新增熱點
+      step.hotspots?.forEach(hs => {
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.classList.add('hs', 'interactive');
+        g.dataset.nextStep = step.nextStep;
+
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", hs.x);
+        rect.setAttribute("y", hs.y);
+        rect.setAttribute("width", hs.width);
+        rect.setAttribute("height", hs.height);
+
+        g.appendChild(rect);
+        hotspotLayer.appendChild(g);
+
+        // 點擊事件
+        g.addEventListener('click', () => {
+          if (step.type === 'interaction') renderStep(step.nextStep);
+        });
+      });
+
+      // 如果是自動步驟，設定計時器
+      if (step.type === 'auto' && step.duration) {
+        autoTimer = setTimeout(() => renderStep(step.nextStep), step.duration);
       }
 
-      // 判斷互動類型
-      if (stepData.type === 'auto') {
-        const duration = stepData.duration || 1000;
-        autoTimer = setTimeout(() => {
-          renderStep(stepData.nextStep);
-        }, duration);
-      }
-      else if (stepData.type === 'interaction') {
-        if (stepData.hotspots) {
-          stepData.hotspots.forEach(hs => {
-            // 支援分支選擇：優先用熱點的 nextStep
-            createHotspot(hs, hs.nextStep || stepData.nextStep);
-          });
-        }
-      }
+      // 新增：預載下一兩步資源
+      preloadNextResources(stepId + 1);
     }
 
-    // === 建立熱點 ===
-    // === 建立熱點 (修改後：支援跳轉頁面) ===
-    function createHotspot(hsData, nextStepId) {
-      const layer = document.getElementById('hotspotLayer');
-      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      g.setAttribute("class", "hs interactive");
-
-      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      rect.setAttribute("x", hsData.x);
-      rect.setAttribute("y", hsData.y);
-      rect.setAttribute("width", hsData.width);
-      rect.setAttribute("height", hsData.height);
-
-      // ★ 修改重點：判斷是否為跳轉指令 ★
-      g.onclick = () => {
-        // 如果 nextStepId 是字串且以 'goto:' 開頭 (例如 'goto:pg10b')
-        if (typeof nextStepId === 'string' && nextStepId.startsWith('goto:')) {
-            const targetPage = nextStepId.split(':')[1];
-            // 跳轉網址
-            window.location.href = `reader.html?page=${targetPage}`;
-        } else {
-            // 否則維持原本的步驟切換
-            renderStep(nextStepId);
-        }
-      };
-
-      g.appendChild(rect);
-      layer.appendChild(g);
-    }
-
-    // === 執行動作 (支援動畫與特效) ===
-    // === 執行動作 (升級版 v4：支援動畫不循環) ===
+    // 執行單一動作
     function executeAction(action) {
-      if (action.type === 'image_swap') {
-        const img = document.getElementById('pageImg');
-        img.src = action.src;
-        if (action.cssClass) {
-          img.className = ''; 
-          void img.offsetWidth; 
-          img.className = action.cssClass; 
-        }
-      } 
-      else if (action.type === 'sfx') {
-        const audio = new Audio(action.src);
-        audio.play().catch(e => console.log('音效播放失敗:', e));
-      }
-      else if (action.type === 'image_overlay') {
-        createOverlayImage(action.src, action);
-      }
-      // ★ 修改重點：動畫控制 ★
-      else if (action.type === 'animation') {
-        // 顯示第一張圖
-        const img = createOverlayImage(action.frames[0], action);
+      if (action.type === 'image_overlay') {
+        createOverlayImage(action.src, {
+          x: action.x,
+          y: action.y,
+          width: action.width,
+          height: action.height,
+          cssClass: action.cssClass
+        });
+      } else if (action.type === 'animation') {
+        const img = createOverlayImage(action.frames[0], {
+          x: action.x,
+          y: action.y,
+          width: action.width,
+          height: action.height,
+          cssClass: action.cssClass
+        });
+
         let frameIndex = 0;
-        
-        const intervalId = setInterval(() => {
-          let nextIndex = frameIndex + 1;
-
-          // 檢查是否播完
-          if (nextIndex >= action.frames.length) {
-            // 如果設定為「不循環 (loop: false)」，就停止計時器
-            if (action.loop === false) {
-              clearInterval(intervalId);
-              console.log("動畫播放完畢，停在最後一張");
-              return; // 停在最後一張，不再更新
-            }
-            // 否則回到第一張
-            nextIndex = 0;
-          }
-          
-          frameIndex = nextIndex;
+        const interval = setInterval(() => {
+          frameIndex = (frameIndex + 1) % action.frames.length;
           img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', action.frames[frameIndex]);
-        }, action.interval || 100);
+        }, action.interval);
 
-        activeIntervals.push(intervalId);
-      }
-        // ★ 新增：支援切換背景音樂 (Switch BGM) ★
-      else if (action.type === 'change_bgm') {
-        // 1. 如果原本有在播音樂，先停掉
-        if (bgmAudio) {
-          bgmAudio.pause();
-          bgmAudio.currentTime = 0; // 重置時間
-        }
-
-        // 2. 播放新的音樂 (如果不為 none)
+        activeIntervals.push(interval);
+      } else if (action.type === 'sfx') {
+        const sfx = new Audio(action.src);
+        sfx.volume = action.volume || 1.0;
+        sfx.play();
+      } else if (action.type === 'change_bgm') {
         if (action.src && action.src !== 'none') {
-           setupBGM(action.src);
+          setupBGM(action.src);
         } else {
-           bgmAudio = null; // 如果設為 none，就變靜音
+          bgmAudio = null; // 如果設為 none，就變靜音
         }
-      }
-      else if (action.type === 'fade_out_bgm') {
+      } else if (action.type === 'fade_out_bgm') {
         if (bgmAudio) {
           const duration = action.duration || 1000; // 預設 1秒
           const originalVolume = bgmAudio.volume;
@@ -287,8 +294,7 @@
           }, stepTime);
         }
       }
-      }
-    
+    }
 
     // 輔助函數
     function createOverlayImage(src, config) {
